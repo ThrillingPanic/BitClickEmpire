@@ -6,6 +6,9 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
     game_engine.cpp
     game_state.cpp
     upgrade.cpp
+    upgrade_data.cpp
+    project.cpp
+    project_data.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

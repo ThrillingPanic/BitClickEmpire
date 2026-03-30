@@ -3,19 +3,14 @@
 #include "game_state.h"
 #include <chrono>
 #include <string>
+#include <vector>
 
-// Top-level game engine: owns the state, runs the game loop timing
 class GameEngine {
 public:
     GameEngine();
 
-    // Called when the player taps the bitcoin
     double on_click();
-
-    // Called every frame with real elapsed time; returns coins earned this tick
     double update();
-
-    // Buy upgrade by index
     bool buy_upgrade(int index);
 
     // Getters for UI
@@ -25,12 +20,38 @@ public:
     double get_click_power() const;
     int get_upgrade_count() const;
 
-    // Upgrade info for UI
+    // Upgrade info
     std::string get_upgrade_name(int index) const;
     std::string get_upgrade_desc(int index) const;
     double get_upgrade_cost(int index) const;
     double get_upgrade_income(int index) const;
     int get_upgrade_owned(int index) const;
+
+    // Project system
+    int get_project_count() const;
+    std::string get_project_name(int index) const;
+    std::string get_project_desc(int index) const;
+    double get_project_base_time(int index) const;
+    double get_project_reward(int index) const;
+    int get_project_difficulty(int index) const;
+    int get_project_required_role_count(int index) const;
+    std::string get_project_required_role_name(int proj_index, int role_index) const;
+    int get_project_required_role_amount(int proj_index, int role_index) const;
+
+    // Active projects
+    int get_active_project_count() const;
+    std::string get_active_project_name(int index) const;
+    double get_active_project_progress(int index) const;
+    double get_active_project_remaining(int index) const;
+    bool is_active_project_completed(int index) const;
+    bool start_project(int project_index, const std::vector<AssignedWorkers>& assignment);
+    bool claim_project(int active_index);
+
+    // Worker pool
+    int get_worker_available(int role) const;
+    int get_worker_total(int role) const;
+    void hire_worker(int role, double cost);
+    double get_game_time() const;
 
     // Save/Load
     std::string save() const;

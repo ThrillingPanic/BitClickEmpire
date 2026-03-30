@@ -22,4 +22,30 @@ public class GameBridge {
     public native int nativeGetUpgradeOwned(int index);
     public native String nativeSave();
     public native boolean nativeLoad(String data);
+
+    // Project system
+    public native int nativeGetProjectCount();
+    public native String nativeGetProjectName(int index);
+    public native String nativeGetProjectDesc(int index);
+    public native double nativeGetProjectBaseTime(int index);
+    public native double nativeGetProjectReward(int index);
+    public native int nativeGetProjectDifficulty(int index);
+    public native int nativeGetProjectRequiredRoleCount(int index);
+    public native String nativeGetProjectRequiredRoleName(int projIndex, int roleIndex);
+    public native int nativeGetProjectRequiredRoleAmount(int projIndex, int roleIndex);
+
+    // Active projects
+    public native int nativeGetActiveProjectCount();
+    public native String nativeGetActiveProjectName(int index);
+    public native double nativeGetActiveProjectProgress(int index);
+    public native double nativeGetActiveProjectRemaining(int index);
+    public native boolean nativeIsActiveProjectCompleted(int index);
+    public native boolean nativeStartProject(int projectIndex, int[] roles, int[] counts, int assignmentSize);
+    public native boolean nativeClaimProject(int activeIndex);
+
+    // Worker pool
+    public native int nativeGetWorkerAvailable(int role);
+    public native int nativeGetWorkerTotal(int role);
+    public native void nativeHireWorker(int role, double cost);
+    public native double nativeGetGameTime();
 }

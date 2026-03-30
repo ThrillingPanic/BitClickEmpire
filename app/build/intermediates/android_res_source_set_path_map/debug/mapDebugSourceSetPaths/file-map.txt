@@ -1,8 +1,0 @@
-com.bitclickempire.game.app-pngs-0 /Users/donniesaucier/BitClickEmpire/app/build/generated/res/pngs/debug
-com.bitclickempire.game.app-resValues-1 /Users/donniesaucier/BitClickEmpire/app/build/generated/res/resValues/debug
-com.bitclickempire.game.app-updated_navigation_xml-2 /Users/donniesaucier/BitClickEmpire/app/build/generated/updated_navigation_xml/debug
-com.bitclickempire.game.app-packageDebugResources-3 /Users/donniesaucier/BitClickEmpire/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
-com.bitclickempire.game.app-packageDebugResources-4 /Users/donniesaucier/BitClickEmpire/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
-com.bitclickempire.game.app-debug-5 /Users/donniesaucier/BitClickEmpire/app/build/intermediates/merged_res/debug/mergeDebugResources
-com.bitclickempire.game.app-debug-6 /Users/donniesaucier/BitClickEmpire/app/src/debug/res
-com.bitclickempire.game.app-main-7 /Users/donniesaucier/BitClickEmpire/app/src/main/res

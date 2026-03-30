@@ -1,6 +1,7 @@
 #pragma once
 
 #include "upgrade.h"
+#include "project.h"
 #include <vector>
 #include <string>
 
@@ -11,31 +12,31 @@ struct GameState {
     double click_power;       // coins per click
     double click_multiplier;  // global click multiplier
     double income_multiplier; // global passive income multiplier
+    double game_time;         // elapsed game time in seconds
     std::vector<Upgrade> upgrades;
+    std::vector<Project> projects;
+    std::vector<ActiveProject> active_projects;
+    WorkerPool workers;
 
     GameState();
 
-    // Initialize the default set of software empire businesses
     void init_upgrades();
+    void init_projects();
 
-    // Perform a click, returns coins earned
     double click();
-
-    // Advance passive income by dt seconds
     void tick(double dt);
-
-    // Total passive income per second
     double total_income_per_second() const;
-
-    // Buy an upgrade by index, returns success
     bool buy_upgrade(int index);
-
-    // Get the number of upgrades
     int upgrade_count() const;
 
-    // Serialize state to a JSON-like string for saving
-    std::string serialize() const;
+    // Project system
+    int project_count() const;
+    int active_project_count() const;
+    bool start_project(int project_index, const std::vector<AssignedWorkers>& assignment);
+    bool claim_project(int active_index);
+    void update_projects();  // check for completions
+    void hire_worker(WorkerRole role, double cost);
 
-    // Deserialize state from saved string
+    std::string serialize() const;
     bool deserialize(const std::string& data);
 };

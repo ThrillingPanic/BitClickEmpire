@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    android:background="#FF16213E">
+
+    <!-- Project name -->
+    <TextView
+        android:id="@+id/tv_active_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:fontFamily="monospace" />
+
+    <!-- Time remaining -->
+    <TextView
+        android:id="@+id/tv_active_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="#FFF7931A"
+        android:fontFamily="monospace"
+        android:paddingTop="4dp" />
+
+    <!-- Progress bar background -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_marginTop="8dp"
+        android:background="#FF0A0A1A">
+
+        <!-- Progress bar fill -->
+        <View
+            android:id="@+id/progress_fill"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#FF4EC9B0" />
+
+        <TextView
+            android:id="@+id/tv_progress_pct"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="11sp"
+            android:textColor="#FFFFFF"
+            android:fontFamily="monospace" />
+    </FrameLayout>
+
+    <!-- Claim button (only visible when complete) -->
+    <Button
+        android:id="@+id/btn_claim"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="8dp"
+        android:text="CLAIM REWARD"
+        android:textSize="13sp"
+        android:textColor="#FF1A1A2E"
+        android:backgroundTint="#FFF7931A"
+        android:fontFamily="monospace"
+        android:visibility="gone" />
+
+</LinearLayout>

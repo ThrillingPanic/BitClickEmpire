@@ -44,47 +44,214 @@
             android:fontFamily="monospace" />
     </LinearLayout>
 
-    <!-- Bitcoin click button -->
+    <!-- Tab content area -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/btn_bitcoin"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="₿"
-            android:textSize="100sp"
-            android:textColor="#FFF7931A"
-            android:background="@drawable/bitcoin_bg"
-            android:clickable="true"
-            android:focusable="true"
-            android:elevation="8dp" />
+        <!-- Click tab -->
+        <FrameLayout
+            android:id="@+id/tab_click"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/btn_bitcoin"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="₿"
+                android:textSize="100sp"
+                android:textColor="#FFF7931A"
+                android:background="@drawable/bitcoin_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:elevation="8dp" />
+        </FrameLayout>
+
+        <!-- Upgrades tab -->
+        <LinearLayout
+            android:id="@+id/tab_upgrades"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  SOFTWARE EMPIRE"
+                android:textSize="14sp"
+                android:textColor="#FFF7931A"
+                android:textStyle="bold"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:background="#FF0F3460"
+                android:fontFamily="monospace" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_upgrades"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FF1A1A2E" />
+        </LinearLayout>
+
+        <!-- Projects tab -->
+        <LinearLayout
+            android:id="@+id/tab_projects"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- Worker pool summary -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="#FF0F3460">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="  TEAM"
+                    android:textSize="14sp"
+                    android:textColor="#FFF7931A"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace" />
+
+                <TextView
+                    android:id="@+id/tv_workers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="#CCFFFFFF"
+                    android:fontFamily="monospace"
+                    android:paddingStart="8dp"
+                    android:paddingTop="4dp" />
+
+                <Button
+                    android:id="@+id/btn_hire"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="4dp"
+                    android:text="HIRE STAFF"
+                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#FF0F3460"
+                    android:fontFamily="monospace" />
+            </LinearLayout>
+
+            <!-- Active projects section -->
+            <TextView
+                android:id="@+id/tv_active_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  ACTIVE PROJECTS"
+                android:textSize="13sp"
+                android:textColor="#FF4EC9B0"
+                android:textStyle="bold"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:fontFamily="monospace"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_active_projects"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#FF1A1A2E"
+                android:nestedScrollingEnabled="false" />
+
+            <!-- Available projects section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  AVAILABLE PROJECTS"
+                android:textSize="13sp"
+                android:textColor="#FFF7931A"
+                android:textStyle="bold"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:fontFamily="monospace" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_projects"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FF1A1A2E" />
+        </LinearLayout>
+
     </FrameLayout>
 
-    <!-- Upgrades list -->
-    <TextView
+    <!-- Bottom navigation tabs -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="  SOFTWARE EMPIRE"
-        android:textSize="14sp"
-        android:textColor="#FFF7931A"
-        android:textStyle="bold"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"
-        android:background="#FF0F3460"
-        android:fontFamily="monospace" />
+        android:layout_height="56dp"
+        android:orientation="horizontal"
+        android:background="#FF16213E"
+        android:elevation="8dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_upgrades"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.5"
-        android:background="#FF1A1A2E" />
+        <TextView
+            android:id="@+id/nav_click"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="⛏ Click"
+            android:textSize="14sp"
+            android:textColor="#FFF7931A"
+            android:textStyle="bold"
+            android:fontFamily="monospace"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#FF0F3460" />
+
+        <TextView
+            android:id="@+id/nav_upgrades"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="🏢 Upgrades"
+            android:textSize="14sp"
+            android:textColor="#88FFFFFF"
+            android:fontFamily="monospace"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#FF0F3460" />
+
+        <TextView
+            android:id="@+id/nav_projects"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="📋 Projects"
+            android:textSize="14sp"
+            android:textColor="#88FFFFFF"
+            android:fontFamily="monospace"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
 
 </LinearLayout>
