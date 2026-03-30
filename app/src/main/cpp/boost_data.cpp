@@ -20,15 +20,15 @@ std::vector<Boost> create_default_boosts() {
     boosts.emplace_back(
         "click_power", "Enhanced Clicks",
         "Each click earns more BTC. Stack it up!",
-        BoostType::ClickPower, 20, 100, 1.8, 1.0
-        // 20 levels, each level adds +1 click power
+        BoostType::ClickPower, 25, 100, 1.8, 5.0
+        // 25 levels, each level adds +5 click power
     );
 
     boosts.emplace_back(
         "click_multi", "Click Multiplier",
         "Multiply ALL click earnings. Compound your taps.",
-        BoostType::ClickMultiplier, 10, 2000, 3.0, 0.5
-        // 10 levels, each level adds x0.5 to click multiplier (max 6x)
+        BoostType::ClickMultiplier, 15, 2000, 3.0, 1.0
+        // 15 levels, each level adds x1.0 to click multiplier (max 16x)
     );
 
     boosts.emplace_back(
@@ -48,8 +48,8 @@ std::vector<Boost> create_default_boosts() {
     boosts.emplace_back(
         "auto_click", "Auto Clicker Pro",
         "Automatically clicks for you every second. Passive tapping.",
-        BoostType::AutoClicker, 5, 10000, 4.0, 1.0
-        // 5 levels, each level adds 1 auto-click per second
+        BoostType::AutoClicker, 10, 10000, 4.0, 2.0
+        // 10 levels, each level adds 2 auto-clicks per second
     );
 
     boosts.emplace_back(

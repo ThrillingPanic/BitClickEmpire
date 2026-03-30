@@ -41,7 +41,7 @@ double GameState::click() {
     double crit = get_crit_chance();
     if (crit > 0.0) {
         double roll = (double)std::rand() / RAND_MAX;
-        if (roll < crit) base *= 10.0;
+        if (roll < crit) base *= 25.0;
     }
     coins += base;
     total_coins_earned += base;
