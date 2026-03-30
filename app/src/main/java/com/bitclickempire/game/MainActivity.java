@@ -309,8 +309,23 @@ public class MainActivity extends AppCompatActivity {
         btnSpawnByte.setBackgroundTintList(ColorStateList.valueOf(0xFFE63946));
         layout.addView(btnSpawnByte);
 
+        // Coin amount input
+        EditText etAmount = new EditText(this);
+        etAmount.setHint("Amount...");
+        etAmount.setInputType(android.text.InputType.TYPE_CLASS_NUMBER | android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        etAmount.setTextColor(0xFFFFFFFF);
+        etAmount.setHintTextColor(0x44FFFFFF);
+        etAmount.setBackgroundColor(0xFF0F3460);
+        etAmount.setPadding(24, 16, 24, 16);
+        etAmount.setFontFeatureSettings("monospace");
+        LinearLayout.LayoutParams etLp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        etLp.topMargin = 16;
+        etAmount.setLayoutParams(etLp);
+        layout.addView(etAmount);
+
         Button btnAddCoins = new Button(this);
-        btnAddCoins.setText("💰 +10K Coins");
+        btnAddCoins.setText("💰 Give Coins");
         btnAddCoins.setTextColor(0xFFFFFFFF);
         btnAddCoins.setBackgroundTintList(ColorStateList.valueOf(0xFFF7931A));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -327,12 +342,16 @@ public class MainActivity extends AppCompatActivity {
 
         btnSpawnByte.setOnClickListener(v -> {
             byteFloater.forceSpawn();
-            dialog.dismiss();
         });
         btnAddCoins.setOnClickListener(v -> {
-            bridge.nativeAddCoins(10000);
-            updateUI();
-            dialog.dismiss();
+            String text = etAmount.getText().toString().trim();
+            if (!text.isEmpty()) {
+                try {
+                    double amount = Double.parseDouble(text);
+                    bridge.nativeAddCoins(amount);
+                    updateUI();
+                } catch (NumberFormatException ignored) {}
+            }
         });
 
         dialog.show();
