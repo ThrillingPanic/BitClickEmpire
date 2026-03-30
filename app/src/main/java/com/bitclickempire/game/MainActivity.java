@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private View btnBitcoin;
     private BitcoinParticleView particleView;
     private ByteFloaterView byteFloater;
+    private HackerInvaderView hackerInvader;
     private TextView tvByteBonus;
     private RecyclerView rvUpgrades;
     private RecyclerView rvProjects;
@@ -126,10 +127,43 @@ public class MainActivity extends AppCompatActivity {
         btnBitcoin = findViewById(R.id.btn_bitcoin);
         particleView = findViewById(R.id.particle_view);
         byteFloater = findViewById(R.id.byte_floater);
+        hackerInvader = findViewById(R.id.hacker_invader);
         tvByteBonus = findViewById(R.id.tv_byte_bonus);
 
         // Byte collection callback
         byteFloater.setOnByteCaughtListener(this::onByteCaught);
+
+        // Hacker invader callbacks
+        hackerInvader.setOnHackerEventListener(new HackerInvaderView.OnHackerEventListener() {
+            @Override
+            public void onHackerKilled(float x, float y) {
+                double coins = bridge.nativeGetCoins();
+                double reward = Math.max(1.0, coins * 0.002); // 0.2% of total, min 1
+                bridge.nativeAddCoins(reward);
+                particleView.spawnParticles(x, y);
+                Toast toast = Toast.makeText(MainActivity.this,
+                    "💀 Hacker eliminated! +" + formatNumber(reward) + " BTC",
+                    Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, -200);
+                toast.show();
+                updateUI();
+            }
+
+            @Override
+            public void onHackerReachedBitcoin() {
+                double coins = bridge.nativeGetCoins();
+                double penalty = coins * 0.005; // lose 0.5% of total
+                if (penalty > 0.01) {
+                    bridge.nativeAddCoins(-penalty);
+                    Toast toast = Toast.makeText(MainActivity.this,
+                        "⚠ Hacker stole " + formatNumber(penalty) + " BTC!",
+                        Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, -200);
+                    toast.show();
+                    updateUI();
+                }
+            }
+        });
 
         // Upgrades tab
         rvUpgrades = findViewById(R.id.rv_upgrades);
@@ -352,6 +386,20 @@ public class MainActivity extends AppCompatActivity {
                     updateUI();
                 } catch (NumberFormatException ignored) {}
             }
+        });
+
+        Button btnSpawnHacker = new Button(this);
+        btnSpawnHacker.setText("👾 Spawn Hacker");
+        btnSpawnHacker.setTextColor(0xFFFFFFFF);
+        btnSpawnHacker.setBackgroundTintList(ColorStateList.valueOf(0xFF9D00FF));
+        LinearLayout.LayoutParams hlp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        hlp.topMargin = 16;
+        btnSpawnHacker.setLayoutParams(hlp);
+        layout.addView(btnSpawnHacker);
+
+        btnSpawnHacker.setOnClickListener(v -> {
+            hackerInvader.forceSpawn();
         });
 
         Button btnReset = new Button(this);
