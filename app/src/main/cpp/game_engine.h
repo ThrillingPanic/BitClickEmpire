@@ -68,6 +68,8 @@ public:
     double get_idle_earnings_pct() const;
     double get_idle_duration_max() const;
     double get_last_lucky_bonus() const;
+    void set_byte_bonus(double multiplier);
+    void clear_byte_bonus();
 
     // Mines gambling
     bool mines_start(int mine_count, double bet);

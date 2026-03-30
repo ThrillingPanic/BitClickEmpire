@@ -275,6 +275,7 @@ Java_com_bitclickempire_game_GameBridge_nativeGetLastLuckyBonus(JNIEnv*, jobject
     return engine().get_last_lucky_bonus();
 }
 
+<<<<<<< HEAD
 // === Mines Gambling JNI ===
 
 JNIEXPORT jboolean JNICALL
@@ -335,6 +336,16 @@ Java_com_bitclickempire_game_GameBridge_nativeMinesGetTileState(JNIEnv*, jobject
 JNIEXPORT jdouble JNICALL
 Java_com_bitclickempire_game_GameBridge_nativeMinesGetMaxBet(JNIEnv*, jobject) {
     return engine().mines_get_max_bet();
+}
+
+JNIEXPORT void JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeSetByteBonus(JNIEnv*, jobject, jdouble multiplier) {
+    engine().set_byte_bonus(multiplier);
+}
+
+JNIEXPORT void JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeClearByteBonus(JNIEnv*, jobject) {
+    engine().clear_byte_bonus();
 }
 
 } // extern "C"

@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvClickPower;
     private View btnBitcoin;
     private BitcoinParticleView particleView;
+    private ByteFloaterView byteFloater;
+    private TextView tvByteBonus;
     private RecyclerView rvUpgrades;
     private RecyclerView rvProjects;
     private RecyclerView rvActiveProjects;
@@ -95,6 +97,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String PREFS_NAME = "bitclick_save";
     private static final String SAVE_KEY = "game_state";
 
+    // Byte collection system
+    private int bytesCollected = 0;
+    private static final int BYTES_NEEDED = 3;
+    private static final double BYTE_BONUS_MULTIPLIER = 5.0;
+    private static final long BYTE_BONUS_DURATION_MS = 60_000; // 1 minute
+    private boolean byteBonusActive = false;
+    private Runnable byteBonusExpiry;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +118,11 @@ public class MainActivity extends AppCompatActivity {
         tvClickPower = findViewById(R.id.tv_click_power);
         btnBitcoin = findViewById(R.id.btn_bitcoin);
         particleView = findViewById(R.id.particle_view);
+        byteFloater = findViewById(R.id.byte_floater);
+        tvByteBonus = findViewById(R.id.tv_byte_bonus);
+
+        // Byte collection callback
+        byteFloater.setOnByteCaughtListener(this::onByteCaught);
 
         // Upgrades tab
         rvUpgrades = findViewById(R.id.rv_upgrades);
@@ -251,6 +266,42 @@ public class MainActivity extends AppCompatActivity {
         anim.setRepeatCount(1);
         anim.setRepeatMode(ScaleAnimation.REVERSE);
         v.startAnimation(anim);
+    }
+
+    private void onByteCaught() {
+        bytesCollected++;
+        if (bytesCollected >= BYTES_NEEDED) {
+            bytesCollected = 0;
+            activateByteBonus();
+            Toast toast = Toast.makeText(this,
+                "\uD83D\uDD34 3/3 BYTES COLLECTED! 5x INCOME FOR 60s! \uD83D\uDD34",
+                Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        } else {
+            Toast toast = Toast.makeText(this,
+                "\uD83D\uDD34 " + bytesCollected + "/" + BYTES_NEEDED + " bytes collected",
+                Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.CENTER, 0, 0);
+            toast.show();
+        }
+    }
+
+    private void activateByteBonus() {
+        // Cancel any existing expiry
+        if (byteBonusExpiry != null) {
+            handler.removeCallbacks(byteBonusExpiry);
+        }
+        byteBonusActive = true;
+        bridge.nativeSetByteBonus(BYTE_BONUS_MULTIPLIER);
+        tvByteBonus.setVisibility(View.VISIBLE);
+
+        byteBonusExpiry = () -> {
+            byteBonusActive = false;
+            bridge.nativeClearByteBonus();
+            tvByteBonus.setVisibility(View.GONE);
+        };
+        handler.postDelayed(byteBonusExpiry, BYTE_BONUS_DURATION_MS);
     }
 
     private void switchTab(int tab) {

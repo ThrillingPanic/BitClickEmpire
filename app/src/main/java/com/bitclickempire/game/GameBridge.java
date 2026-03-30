@@ -77,4 +77,8 @@ public class GameBridge {
     public native int nativeMinesGetTilesRevealed();
     public native int nativeMinesGetTileState(int index);
     public native double nativeMinesGetMaxBet();
+
+    // Byte bonus
+    public native void nativeSetByteBonus(double multiplier);
+    public native void nativeClearByteBonus();
 }

@@ -22,6 +22,7 @@ struct GameState {
     double auto_click_accum;  // accumulator for auto-click timing
     double lucky_timer;       // countdown for next lucky bonus
     double last_lucky_bonus;  // amount of last lucky bonus (for UI)
+    double byte_bonus_multiplier; // temporary multiplier from byte collection (1.0 = no bonus)
 
     GameState();
 
@@ -46,6 +47,8 @@ struct GameState {
     double get_idle_duration_max() const;
     double get_crit_chance() const;
     double get_auto_clicks_per_sec() const;
+    void set_byte_bonus(double multiplier);
+    void clear_byte_bonus();
 
     // Project system
     int project_count() const;
