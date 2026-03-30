@@ -16,6 +16,7 @@ GameState::GameState()
     , auto_click_accum(0.0)
     , lucky_timer(60.0)
     , last_lucky_bonus(0.0)
+    , byte_bonus_multiplier(1.0)
 {
     init_upgrades();
     init_projects();
@@ -126,7 +127,15 @@ double GameState::effective_click_multiplier() const {
 }
 
 double GameState::effective_income_multiplier() const {
-    return income_multiplier + get_boost_value(BoostType::IncomeBoost);
+    return (income_multiplier + get_boost_value(BoostType::IncomeBoost)) * byte_bonus_multiplier;
+}
+
+void GameState::set_byte_bonus(double multiplier) {
+    byte_bonus_multiplier = multiplier;
+}
+
+void GameState::clear_byte_bonus() {
+    byte_bonus_multiplier = 1.0;
 }
 
 double GameState::get_idle_earnings_pct() const {

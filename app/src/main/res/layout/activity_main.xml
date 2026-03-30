@@ -76,6 +76,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:elevation="12dp" />
+
+            <com.bitclickempire.game.ByteFloaterView
+                android:id="@+id/byte_floater"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="14dp" />
+
+            <!-- Byte bonus active indicator -->
+            <TextView
+                android:id="@+id/tv_byte_bonus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center_horizontal"
+                android:layout_marginTop="16dp"
+                android:padding="8dp"
+                android:text="🔴 BYTE BONUS 5x INCOME! 🔴"
+                android:textSize="14sp"
+                android:textColor="#FFE63946"
+                android:textStyle="bold"
+                android:fontFamily="monospace"
+                android:background="#CC1A1A2E"
+                android:elevation="16dp"
+                android:visibility="gone" />
         </FrameLayout>
 
         <!-- Upgrades tab -->

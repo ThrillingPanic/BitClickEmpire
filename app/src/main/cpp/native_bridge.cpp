@@ -265,4 +265,14 @@ Java_com_bitclickempire_game_GameBridge_nativeGetLastLuckyBonus(JNIEnv*, jobject
     return engine().get_last_lucky_bonus();
 }
 
+JNIEXPORT void JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeSetByteBonus(JNIEnv*, jobject, jdouble multiplier) {
+    engine().set_byte_bonus(multiplier);
+}
+
+JNIEXPORT void JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeClearByteBonus(JNIEnv*, jobject) {
+    engine().clear_byte_bonus();
+}
+
 } // extern "C"

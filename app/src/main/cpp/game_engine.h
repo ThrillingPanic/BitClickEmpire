@@ -65,6 +65,8 @@ public:
     double get_idle_earnings_pct() const;
     double get_idle_duration_max() const;
     double get_last_lucky_bonus() const;
+    void set_byte_bonus(double multiplier);
+    void clear_byte_bonus();
 
     // Save/Load
     std::string save() const;

@@ -61,4 +61,6 @@ public class GameBridge {
     public native double nativeGetIdleEarningsPct();
     public native double nativeGetIdleDurationMax();
     public native double nativeGetLastLuckyBonus();
+    public native void nativeSetByteBonus(double multiplier);
+    public native void nativeClearByteBonus();
 }
