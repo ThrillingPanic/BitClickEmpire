@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvPerSecond;
     private TextView tvClickPower;
     private View btnBitcoin;
+    private BitcoinParticleView particleView;
     private RecyclerView rvUpgrades;
     private RecyclerView rvProjects;
     private RecyclerView rvActiveProjects;
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         tvPerSecond = findViewById(R.id.tv_per_second);
         tvClickPower = findViewById(R.id.tv_click_power);
         btnBitcoin = findViewById(R.id.btn_bitcoin);
+        particleView = findViewById(R.id.particle_view);
 
         // Upgrades tab
         rvUpgrades = findViewById(R.id.rv_upgrades);
@@ -129,6 +131,10 @@ public class MainActivity extends AppCompatActivity {
         btnBitcoin.setOnClickListener(v -> {
             bridge.nativeClick();
             animateClick(v);
+            // Spawn particles from the center of the bitcoin button
+            float cx = v.getX() + v.getWidth() / 2f;
+            float cy = v.getY() + v.getHeight() / 2f;
+            particleView.spawnParticles(cx, cy);
             updateUI();
         });
 
