@@ -54,6 +54,13 @@ int GameEngine::get_upgrade_owned(int index) const {
     return state_.upgrades[index].owned;
 }
 
+bool GameEngine::is_upgrade_locked(int index) const {
+    if (index <= 0) return false;  // First upgrade is always unlocked
+    if (index >= static_cast<int>(state_.upgrades.size())) return false;
+    // An upgrade is locked if the previous one hasn't been owned yet
+    return state_.upgrades[index - 1].owned == 0;
+}
+
 // Project system implementations
 int GameEngine::get_project_count() const {
     return state_.project_count();
@@ -101,6 +108,20 @@ int GameEngine::get_project_required_role_amount(int proj_index, int role_index)
     const auto& roles = state_.projects[proj_index].required_roles;
     if (role_index < 0 || role_index >= static_cast<int>(roles.size())) return 0;
     return roles[role_index].count;
+}
+
+bool GameEngine::is_project_locked(int index) const {
+    if (index <= 0) return false;  // First project is always unlocked
+    if (index >= static_cast<int>(state_.projects.size())) return false;
+    
+    // A project is locked if the previous one hasn't been completed and claimed
+    int prev_index = index - 1;
+    for (const auto& active : state_.active_projects) {
+        if (active.project_index == prev_index && active.claimed) {
+            return false;  // Previous project completed, so this one is unlocked
+        }
+    }
+    return true;  // Previous project not completed, so this one is locked
 }
 
 // Active projects

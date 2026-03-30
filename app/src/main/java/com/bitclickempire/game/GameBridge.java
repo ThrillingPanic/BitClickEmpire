@@ -20,6 +20,7 @@ public class GameBridge {
     public native double nativeGetUpgradeCost(int index);
     public native double nativeGetUpgradeIncome(int index);
     public native int nativeGetUpgradeOwned(int index);
+    public native boolean nativeIsUpgradeLocked(int index);
     public native String nativeSave();
     public native boolean nativeLoad(String data);
 
@@ -33,6 +34,7 @@ public class GameBridge {
     public native int nativeGetProjectRequiredRoleCount(int index);
     public native String nativeGetProjectRequiredRoleName(int projIndex, int roleIndex);
     public native int nativeGetProjectRequiredRoleAmount(int projIndex, int roleIndex);
+    public native boolean nativeIsProjectLocked(int index);
 
     // Active projects
     public native int nativeGetActiveProjectCount();

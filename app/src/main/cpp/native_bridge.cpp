@@ -84,6 +84,11 @@ Java_com_bitclickempire_game_GameBridge_nativeGetUpgradeOwned(JNIEnv*, jobject, 
     return engine().get_upgrade_owned(index);
 }
 
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeIsUpgradeLocked(JNIEnv*, jobject, jint index) {
+    return engine().is_upgrade_locked(index);
+}
+
 JNIEXPORT jstring JNICALL
 Java_com_bitclickempire_game_GameBridge_nativeSave(JNIEnv* env, jobject) {
     return env->NewStringUTF(engine().save().c_str());
@@ -142,6 +147,11 @@ Java_com_bitclickempire_game_GameBridge_nativeGetProjectRequiredRoleName(JNIEnv*
 JNIEXPORT jint JNICALL
 Java_com_bitclickempire_game_GameBridge_nativeGetProjectRequiredRoleAmount(JNIEnv*, jobject, jint projIndex, jint roleIndex) {
     return engine().get_project_required_role_amount(projIndex, roleIndex);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeIsProjectLocked(JNIEnv*, jobject, jint index) {
+    return engine().is_project_locked(index);
 }
 
 JNIEXPORT jint JNICALL

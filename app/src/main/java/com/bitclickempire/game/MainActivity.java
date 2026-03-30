@@ -767,13 +767,22 @@ public class MainActivity extends AppCompatActivity {
             double cost = bridge.nativeGetUpgradeCost(position);
             double income = bridge.nativeGetUpgradeIncome(position);
             int owned = bridge.nativeGetUpgradeOwned(position);
+            boolean locked = bridge.nativeIsUpgradeLocked(position);
 
             holder.tvName.setText(name + " (" + owned + ")");
-            holder.tvDesc.setText(desc);
+            if (locked) {
+                holder.tvDesc.setText(desc + " 🔒 LOCKED");
+                holder.tvDesc.setTextColor(0xFF888888);
+            } else {
+                holder.tvDesc.setText(desc);
+                holder.tvDesc.setTextColor(0xFFCCCCCC);
+            }
             holder.tvCost.setText("Cost: " + formatNumber(cost) + " BTC");
             holder.tvIncome.setText("Earning: " + formatNumber(income) + " BTC/sec");
-            holder.btnBuy.setEnabled(coins >= cost);
-            holder.btnBuy.setAlpha(coins >= cost ? 1.0f : 0.5f);
+            
+            boolean canBuy = coins >= cost && !locked;
+            holder.btnBuy.setEnabled(canBuy);
+            holder.btnBuy.setAlpha(canBuy ? 1.0f : 0.5f);
         }
 
         @Override
@@ -820,9 +829,30 @@ public class MainActivity extends AppCompatActivity {
             double baseTime = bridge.nativeGetProjectBaseTime(position);
             double reward = bridge.nativeGetProjectReward(position);
             int difficulty = bridge.nativeGetProjectDifficulty(position);
+            boolean locked = bridge.nativeIsProjectLocked(position);
+
+            if (locked) {
+                holder.tvName.setText(name + " 🔒 LOCKED");
+                holder.tvName.setTextColor(0xFF888888);
+                holder.tvDesc.setText(desc + " - Complete the previous project to unlock");
+                holder.tvDesc.setTextColor(0xFF888888);
+                holder.tvTime.setTextColor(0xFF888888);
+                holder.tvReward.setTextColor(0xFF888888);
+                holder.tvDifficulty.setTextColor(0xFF888888);
+                holder.tvRoles.setTextColor(0xFF888888);
+                holder.btnStart.setEnabled(false);
+                holder.btnStart.setAlpha(0.3f);
+                return;
+            }
 
             holder.tvName.setText(name);
+            holder.tvName.setTextColor(0xFFFFFFFF);
             holder.tvDesc.setText(desc);
+            holder.tvDesc.setTextColor(0xFFCCCCCC);
+            holder.tvTime.setTextColor(0xFFCCCCCC);
+            holder.tvReward.setTextColor(0xFFCCCCCC);
+            holder.tvDifficulty.setTextColor(0xFFCCCCCC);
+            holder.tvRoles.setTextColor(0xFFCCCCCC);
             holder.tvTime.setText("⏱ " + formatTime(baseTime));
             holder.tvReward.setText("💰 " + formatNumber(reward) + " BTC");
 

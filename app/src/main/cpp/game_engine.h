@@ -27,6 +27,7 @@ public:
     double get_upgrade_cost(int index) const;
     double get_upgrade_income(int index) const;
     int get_upgrade_owned(int index) const;
+    bool is_upgrade_locked(int index) const;
 
     // Project system
     int get_project_count() const;
@@ -38,6 +39,7 @@ public:
     int get_project_required_role_count(int index) const;
     std::string get_project_required_role_name(int proj_index, int role_index) const;
     int get_project_required_role_amount(int proj_index, int role_index) const;
+    bool is_project_locked(int index) const;
 
     // Active projects
     int get_active_project_count() const;
