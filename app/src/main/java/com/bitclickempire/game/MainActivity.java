@@ -220,6 +220,9 @@ public class MainActivity extends AppCompatActivity {
         navBoosts.setOnClickListener(v -> switchTab(TAB_BOOSTS));
         navCasino.setOnClickListener(v -> switchTab(TAB_CASINO));
 
+        // Dev button
+        findViewById(R.id.btn_dev).setOnClickListener(v -> showDevMenu());
+
         btnBitcoin.setOnClickListener(v -> {
             bridge.nativeClick();
             animateClick(v);
@@ -266,6 +269,46 @@ public class MainActivity extends AppCompatActivity {
         anim.setRepeatCount(1);
         anim.setRepeatMode(ScaleAnimation.REVERSE);
         v.startAnimation(anim);
+    }
+
+    private void showDevMenu() {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(48, 24, 48, 24);
+
+        Button btnSpawnByte = new Button(this);
+        btnSpawnByte.setText("🔴 Spawn Byte");
+        btnSpawnByte.setTextColor(0xFFFFFFFF);
+        btnSpawnByte.setBackgroundTintList(ColorStateList.valueOf(0xFFE63946));
+        layout.addView(btnSpawnByte);
+
+        Button btnAddCoins = new Button(this);
+        btnAddCoins.setText("💰 +10K Coins");
+        btnAddCoins.setTextColor(0xFFFFFFFF);
+        btnAddCoins.setBackgroundTintList(ColorStateList.valueOf(0xFFF7931A));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = 16;
+        btnAddCoins.setLayoutParams(lp);
+        layout.addView(btnAddCoins);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog)
+            .setTitle("🛠 Dev Tools")
+            .setView(layout)
+            .setNegativeButton("Close", null)
+            .create();
+
+        btnSpawnByte.setOnClickListener(v -> {
+            byteFloater.forceSpawn();
+            dialog.dismiss();
+        });
+        btnAddCoins.setOnClickListener(v -> {
+            bridge.nativeAddCoins(10000);
+            updateUI();
+            dialog.dismiss();
+        });
+
+        dialog.show();
     }
 
     private void onByteCaught() {

@@ -70,6 +70,7 @@ public:
     double get_last_lucky_bonus() const;
     void set_byte_bonus(double multiplier);
     void clear_byte_bonus();
+    void add_coins(double amount);
 
     // Mines gambling
     bool mines_start(int mine_count, double bet);

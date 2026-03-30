@@ -81,4 +81,7 @@ public class GameBridge {
     // Byte bonus
     public native void nativeSetByteBonus(double multiplier);
     public native void nativeClearByteBonus();
+
+    // Dev / debug
+    public native void nativeAddCoins(double amount);
 }

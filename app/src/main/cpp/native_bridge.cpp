@@ -349,4 +349,11 @@ Java_com_bitclickempire_game_GameBridge_nativeClearByteBonus(JNIEnv*, jobject) {
     engine().clear_byte_bonus();
 }
 
+// === Dev / Debug ===
+
+JNIEXPORT void JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeAddCoins(JNIEnv*, jobject, jdouble amount) {
+    engine().add_coins(amount);
+}
+
 } // extern "C"

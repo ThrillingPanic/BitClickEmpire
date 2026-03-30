@@ -25,6 +25,7 @@ bool GameEngine::buy_upgrade(int index) {
 
 void GameEngine::set_byte_bonus(double multiplier) { state_.set_byte_bonus(multiplier); }
 void GameEngine::clear_byte_bonus() { state_.clear_byte_bonus(); }
+void GameEngine::add_coins(double amount) { state_.coins += amount; state_.total_coins_earned += amount; }
 
 double GameEngine::get_coins() const { return state_.coins; }
 double GameEngine::get_total_earned() const { return state_.total_coins_earned; }
