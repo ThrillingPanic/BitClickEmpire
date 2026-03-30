@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     private static final long TICK_MS = 50;
     private static final String PREFS_NAME = "bitclick_save";
     private static final String SAVE_KEY = "game_state";
+    private static final String LAST_EXIT_KEY = "last_exit_time";
 
     // Byte collection system
     private int bytesCollected = 0;
@@ -591,7 +592,10 @@ public class MainActivity extends AppCompatActivity {
     private void saveGame() {
         String data = bridge.nativeSave();
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
-        prefs.edit().putString(SAVE_KEY, data).apply();
+        prefs.edit()
+            .putString(SAVE_KEY, data)
+            .putLong(LAST_EXIT_KEY, System.currentTimeMillis())
+            .apply();
     }
 
     private void loadGame() {
@@ -599,7 +603,96 @@ public class MainActivity extends AppCompatActivity {
         String data = prefs.getString(SAVE_KEY, null);
         if (data != null) {
             bridge.nativeLoad(data);
+
+            long lastExit = prefs.getLong(LAST_EXIT_KEY, 0);
+            if (lastExit > 0) {
+                double elapsedSec = (System.currentTimeMillis() - lastExit) / 1000.0;
+                if (elapsedSec > 10) { // only show if away for >10 seconds
+                    double idlePct = bridge.nativeGetIdleEarningsPct();
+                    double idleMaxSec = bridge.nativeGetIdleDurationMax();
+                    double cappedSec = Math.min(elapsedSec, idleMaxSec);
+                    double incomePerSec = bridge.nativeGetIncomePerSecond();
+                    double offlineEarnings = incomePerSec * idlePct * cappedSec;
+
+                    if (offlineEarnings > 0) {
+                        bridge.nativeAddCoins(offlineEarnings);
+                        showOfflineProgressDialog(offlineEarnings, elapsedSec, cappedSec);
+                    }
+                }
+            }
         }
+    }
+
+    private void showOfflineProgressDialog(double earnings, double totalSec, double cappedSec) {
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(64, 48, 64, 32);
+        layout.setGravity(Gravity.CENTER);
+        layout.setBackgroundColor(0xFF1A1A2E);
+
+        TextView tvTitle = new TextView(this);
+        tvTitle.setText("⛏ Welcome Back!");
+        tvTitle.setTextSize(22);
+        tvTitle.setTextColor(0xFFF7931A);
+        tvTitle.setTypeface(null, android.graphics.Typeface.BOLD);
+        tvTitle.setGravity(Gravity.CENTER);
+        tvTitle.setFontFeatureSettings("monospace");
+        layout.addView(tvTitle);
+
+        TextView tvTime = new TextView(this);
+        tvTime.setText("You were away for " + formatTimeDetailed(totalSec));
+        tvTime.setTextSize(14);
+        tvTime.setTextColor(0xAAFFFFFF);
+        tvTime.setGravity(Gravity.CENTER);
+        tvTime.setPadding(0, 24, 0, 16);
+        layout.addView(tvTime);
+
+        TextView tvEarned = new TextView(this);
+        tvEarned.setText("+" + formatNumber(earnings) + " BTC");
+        tvEarned.setTextSize(28);
+        tvEarned.setTextColor(0xFF4EC9B0);
+        tvEarned.setTypeface(null, android.graphics.Typeface.BOLD);
+        tvEarned.setGravity(Gravity.CENTER);
+        tvEarned.setPadding(0, 8, 0, 8);
+        layout.addView(tvEarned);
+
+        TextView tvLabel = new TextView(this);
+        tvLabel.setText("earned while offline");
+        tvLabel.setTextSize(13);
+        tvLabel.setTextColor(0x88FFFFFF);
+        tvLabel.setGravity(Gravity.CENTER);
+        tvLabel.setPadding(0, 0, 0, 32);
+        layout.addView(tvLabel);
+
+        Button btnContinue = new Button(this);
+        btnContinue.setText("Continue");
+        btnContinue.setTextSize(16);
+        btnContinue.setTextColor(0xFF1A1A2E);
+        btnContinue.setTypeface(null, android.graphics.Typeface.BOLD);
+        btnContinue.setBackgroundTintList(ColorStateList.valueOf(0xFFF7931A));
+        layout.addView(btnContinue);
+
+        AlertDialog dialog = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog)
+            .setView(layout)
+            .setCancelable(false)
+            .create();
+
+        btnContinue.setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+    }
+
+    private static String formatTimeDetailed(double seconds) {
+        int s = (int) seconds;
+        if (s < 60) return s + " seconds";
+        if (s < 3600) {
+            int m = s / 60;
+            return m + (m == 1 ? " minute" : " minutes");
+        }
+        int h = s / 3600;
+        int m = (s % 3600) / 60;
+        String result = h + (h == 1 ? " hour" : " hours");
+        if (m > 0) result += " " + m + (m == 1 ? " minute" : " minutes");
+        return result;
     }
 
     static String formatNumber(double num) {
