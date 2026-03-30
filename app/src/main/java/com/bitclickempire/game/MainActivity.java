@@ -33,12 +33,15 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvUpgrades;
     private RecyclerView rvProjects;
     private RecyclerView rvActiveProjects;
+    private RecyclerView rvBoosts;
     private View tabClick;
     private View tabUpgrades;
     private View tabProjects;
+    private View tabBoosts;
     private TextView navClick;
     private TextView navUpgrades;
     private TextView navProjects;
+    private TextView navBoosts;
     private TextView tvWorkers;
     private TextView tvActiveHeader;
     private Button btnHire;
@@ -46,10 +49,12 @@ public class MainActivity extends AppCompatActivity {
     private UpgradeAdapter upgradeAdapter;
     private ProjectAdapter projectAdapter;
     private ActiveProjectAdapter activeProjectAdapter;
+    private BoostAdapter boostAdapter;
 
     private static final int TAB_CLICK = 0;
     private static final int TAB_UPGRADES = 1;
     private static final int TAB_PROJECTS = 2;
+    private static final int TAB_BOOSTS = 3;
     private int currentTab = TAB_CLICK;
 
     // Worker role ordinals matching C++ WorkerRole enum
@@ -100,17 +105,26 @@ public class MainActivity extends AppCompatActivity {
         btnHire = findViewById(R.id.btn_hire);
         btnHire.setOnClickListener(v -> showHireDialog());
 
+        // Boosts tab
+        rvBoosts = findViewById(R.id.rv_boosts);
+        rvBoosts.setLayoutManager(new LinearLayoutManager(this));
+        boostAdapter = new BoostAdapter();
+        rvBoosts.setAdapter(boostAdapter);
+
         // Tab navigation
         tabClick = findViewById(R.id.tab_click);
         tabUpgrades = findViewById(R.id.tab_upgrades);
         tabProjects = findViewById(R.id.tab_projects);
+        tabBoosts = findViewById(R.id.tab_boosts);
         navClick = findViewById(R.id.nav_click);
         navUpgrades = findViewById(R.id.nav_upgrades);
         navProjects = findViewById(R.id.nav_projects);
+        navBoosts = findViewById(R.id.nav_boosts);
 
         navClick.setOnClickListener(v -> switchTab(TAB_CLICK));
         navUpgrades.setOnClickListener(v -> switchTab(TAB_UPGRADES));
         navProjects.setOnClickListener(v -> switchTab(TAB_PROJECTS));
+        navBoosts.setOnClickListener(v -> switchTab(TAB_BOOSTS));
 
         btnBitcoin.setOnClickListener(v -> {
             bridge.nativeClick();
@@ -161,15 +175,19 @@ public class MainActivity extends AppCompatActivity {
         tabClick.setVisibility(tab == TAB_CLICK ? View.VISIBLE : View.GONE);
         tabUpgrades.setVisibility(tab == TAB_UPGRADES ? View.VISIBLE : View.GONE);
         tabProjects.setVisibility(tab == TAB_PROJECTS ? View.VISIBLE : View.GONE);
+        tabBoosts.setVisibility(tab == TAB_BOOSTS ? View.VISIBLE : View.GONE);
 
         setNavStyle(navClick, tab == TAB_CLICK);
         setNavStyle(navUpgrades, tab == TAB_UPGRADES);
         setNavStyle(navProjects, tab == TAB_PROJECTS);
+        setNavStyle(navBoosts, tab == TAB_BOOSTS);
 
         if (tab == TAB_UPGRADES) {
             upgradeAdapter.notifyDataSetChanged();
         } else if (tab == TAB_PROJECTS) {
             refreshProjectsTab();
+        } else if (tab == TAB_BOOSTS) {
+            boostAdapter.notifyDataSetChanged();
         }
     }
 
@@ -215,6 +233,20 @@ public class MainActivity extends AppCompatActivity {
                     int position = holder.getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         upgradeAdapter.updateVH(holder, position, coins);
+                    }
+                }
+            }
+        }
+
+        if (currentTab == TAB_BOOSTS && rvBoosts != null) {
+            for (int i = 0; i < rvBoosts.getChildCount(); i++) {
+                View child = rvBoosts.getChildAt(i);
+                RecyclerView.ViewHolder vh = rvBoosts.getChildViewHolder(child);
+                if (vh instanceof BoostAdapter.VH) {
+                    BoostAdapter.VH holder = (BoostAdapter.VH) vh;
+                    int position = holder.getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        boostAdapter.updateVH(holder, position, coins);
                     }
                 }
             }
@@ -560,6 +592,80 @@ public class MainActivity extends AppCompatActivity {
                 tvProgressPct = v.findViewById(R.id.tv_progress_pct);
                 progressFill = v.findViewById(R.id.progress_fill);
                 btnClaim = v.findViewById(R.id.btn_claim);
+            }
+        }
+    }
+
+    // RecyclerView adapter for boosts
+    private class BoostAdapter extends RecyclerView.Adapter<BoostAdapter.VH> {
+
+        @Override
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_boost, parent, false);
+            VH holder = new VH(v);
+            holder.btnBuy.setOnClickListener(view -> {
+                int position = holder.getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    bridge.nativeBuyBoost(position);
+                    notifyItemChanged(position);
+                    updateUI();
+                }
+            });
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(VH holder, int position) {
+            double coins = bridge.nativeGetCoins();
+            updateVH(holder, position, coins);
+        }
+
+        void updateVH(VH holder, int position, double coins) {
+            String name = bridge.nativeGetBoostName(position);
+            String desc = bridge.nativeGetBoostDesc(position);
+            double cost = bridge.nativeGetBoostCost(position);
+            int level = bridge.nativeGetBoostLevel(position);
+            int maxLevel = bridge.nativeGetBoostMaxLevel(position);
+            String effect = bridge.nativeGetBoostEffect(position);
+
+            holder.tvName.setText(name);
+            holder.tvDesc.setText(desc);
+            holder.tvLevel.setText("Lv." + level + "/" + maxLevel);
+            holder.tvEffect.setText(effect);
+
+            if (level >= maxLevel) {
+                holder.tvCost.setText("MAXED");
+                holder.tvCost.setTextColor(0xFF4EC9B0);
+                holder.btnBuy.setEnabled(false);
+                holder.btnBuy.setAlpha(0.4f);
+                holder.btnBuy.setText("MAX");
+            } else {
+                holder.tvCost.setText("Cost: " + formatNumber(cost) + " BTC");
+                holder.tvCost.setTextColor(0xFFF7931A);
+                holder.btnBuy.setEnabled(coins >= cost);
+                holder.btnBuy.setAlpha(coins >= cost ? 1.0f : 0.5f);
+                holder.btnBuy.setText("BUY");
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return bridge.nativeGetBoostCount();
+        }
+
+        class VH extends RecyclerView.ViewHolder {
+            TextView tvName, tvDesc, tvLevel, tvEffect, tvCost;
+            Button btnBuy;
+
+            VH(View v) {
+                super(v);
+                tvName = v.findViewById(R.id.tv_boost_name);
+                tvDesc = v.findViewById(R.id.tv_boost_desc);
+                tvLevel = v.findViewById(R.id.tv_boost_level);
+                tvEffect = v.findViewById(R.id.tv_boost_effect);
+                tvCost = v.findViewById(R.id.tv_boost_cost);
+                btnBuy = v.findViewById(R.id.btn_buy_boost);
             }
         }
     }

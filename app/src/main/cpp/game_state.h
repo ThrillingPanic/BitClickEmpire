@@ -2,6 +2,7 @@
 
 #include "upgrade.h"
 #include "project.h"
+#include "boost.h"
 #include <vector>
 #include <string>
 
@@ -17,17 +18,34 @@ struct GameState {
     std::vector<Project> projects;
     std::vector<ActiveProject> active_projects;
     WorkerPool workers;
+    std::vector<Boost> boosts;
+    double auto_click_accum;  // accumulator for auto-click timing
+    double lucky_timer;       // countdown for next lucky bonus
+    double last_lucky_bonus;  // amount of last lucky bonus (for UI)
 
     GameState();
 
     void init_upgrades();
     void init_projects();
+    void init_boosts();
 
     double click();
     void tick(double dt);
     double total_income_per_second() const;
     bool buy_upgrade(int index);
     int upgrade_count() const;
+
+    // Boost system
+    int boost_count() const;
+    bool buy_boost(int index);
+    double get_boost_value(BoostType type) const;
+    double effective_click_power() const;
+    double effective_click_multiplier() const;
+    double effective_income_multiplier() const;
+    double get_idle_earnings_pct() const;
+    double get_idle_duration_max() const;
+    double get_crit_chance() const;
+    double get_auto_clicks_per_sec() const;
 
     // Project system
     int project_count() const;

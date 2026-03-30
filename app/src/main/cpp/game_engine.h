@@ -53,6 +53,19 @@ public:
     void hire_worker(int role, double cost);
     double get_game_time() const;
 
+    // Boost system
+    int get_boost_count() const;
+    std::string get_boost_name(int index) const;
+    std::string get_boost_desc(int index) const;
+    double get_boost_cost(int index) const;
+    int get_boost_level(int index) const;
+    int get_boost_max_level(int index) const;
+    std::string get_boost_effect(int index) const;
+    bool buy_boost(int index);
+    double get_idle_earnings_pct() const;
+    double get_idle_duration_max() const;
+    double get_last_lucky_bonus() const;
+
     // Save/Load
     std::string save() const;
     bool load(const std::string& data);

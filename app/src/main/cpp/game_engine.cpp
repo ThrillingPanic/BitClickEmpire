@@ -26,7 +26,7 @@ bool GameEngine::buy_upgrade(int index) {
 double GameEngine::get_coins() const { return state_.coins; }
 double GameEngine::get_total_earned() const { return state_.total_coins_earned; }
 double GameEngine::get_income_per_second() const { return state_.total_income_per_second(); }
-double GameEngine::get_click_power() const { return state_.click_power * state_.click_multiplier; }
+double GameEngine::get_click_power() const { return state_.effective_click_power() * state_.effective_click_multiplier(); }
 int GameEngine::get_upgrade_count() const { return state_.upgrade_count(); }
 
 std::string GameEngine::get_upgrade_name(int index) const {
@@ -153,6 +153,57 @@ void GameEngine::hire_worker(int role, double cost) {
 
 double GameEngine::get_game_time() const {
     return state_.game_time;
+}
+
+// Boost system
+int GameEngine::get_boost_count() const {
+    return state_.boost_count();
+}
+
+std::string GameEngine::get_boost_name(int index) const {
+    if (index < 0 || index >= static_cast<int>(state_.boosts.size())) return "";
+    return state_.boosts[index].name;
+}
+
+std::string GameEngine::get_boost_desc(int index) const {
+    if (index < 0 || index >= static_cast<int>(state_.boosts.size())) return "";
+    return state_.boosts[index].description;
+}
+
+double GameEngine::get_boost_cost(int index) const {
+    if (index < 0 || index >= static_cast<int>(state_.boosts.size())) return 0;
+    return state_.boosts[index].current_cost();
+}
+
+int GameEngine::get_boost_level(int index) const {
+    if (index < 0 || index >= static_cast<int>(state_.boosts.size())) return 0;
+    return state_.boosts[index].level;
+}
+
+int GameEngine::get_boost_max_level(int index) const {
+    if (index < 0 || index >= static_cast<int>(state_.boosts.size())) return 0;
+    return state_.boosts[index].max_level;
+}
+
+std::string GameEngine::get_boost_effect(int index) const {
+    if (index < 0 || index >= static_cast<int>(state_.boosts.size())) return "";
+    return state_.boosts[index].effect_text();
+}
+
+bool GameEngine::buy_boost(int index) {
+    return state_.buy_boost(index);
+}
+
+double GameEngine::get_idle_earnings_pct() const {
+    return state_.get_idle_earnings_pct();
+}
+
+double GameEngine::get_idle_duration_max() const {
+    return state_.get_idle_duration_max();
+}
+
+double GameEngine::get_last_lucky_bonus() const {
+    return state_.last_lucky_bonus;
 }
 
 std::string GameEngine::save() const {

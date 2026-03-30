@@ -48,4 +48,17 @@ public class GameBridge {
     public native int nativeGetWorkerTotal(int role);
     public native void nativeHireWorker(int role, double cost);
     public native double nativeGetGameTime();
+
+    // Boost system
+    public native int nativeGetBoostCount();
+    public native String nativeGetBoostName(int index);
+    public native String nativeGetBoostDesc(int index);
+    public native double nativeGetBoostCost(int index);
+    public native int nativeGetBoostLevel(int index);
+    public native int nativeGetBoostMaxLevel(int index);
+    public native String nativeGetBoostEffect(int index);
+    public native boolean nativeBuyBoost(int index);
+    public native double nativeGetIdleEarningsPct();
+    public native double nativeGetIdleDurationMax();
+    public native double nativeGetLastLuckyBonus();
 }

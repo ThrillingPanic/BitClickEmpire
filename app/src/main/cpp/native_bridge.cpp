@@ -208,4 +208,61 @@ Java_com_bitclickempire_game_GameBridge_nativeGetGameTime(JNIEnv*, jobject) {
     return engine().get_game_time();
 }
 
+// === Boost System JNI ===
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetBoostCount(JNIEnv*, jobject) {
+    return engine().get_boost_count();
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetBoostName(JNIEnv* env, jobject, jint index) {
+    return env->NewStringUTF(engine().get_boost_name(index).c_str());
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetBoostDesc(JNIEnv* env, jobject, jint index) {
+    return env->NewStringUTF(engine().get_boost_desc(index).c_str());
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetBoostCost(JNIEnv*, jobject, jint index) {
+    return engine().get_boost_cost(index);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetBoostLevel(JNIEnv*, jobject, jint index) {
+    return engine().get_boost_level(index);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetBoostMaxLevel(JNIEnv*, jobject, jint index) {
+    return engine().get_boost_max_level(index);
+}
+
+JNIEXPORT jstring JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetBoostEffect(JNIEnv* env, jobject, jint index) {
+    return env->NewStringUTF(engine().get_boost_effect(index).c_str());
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBuyBoost(JNIEnv*, jobject, jint index) {
+    return engine().buy_boost(index);
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetIdleEarningsPct(JNIEnv*, jobject) {
+    return engine().get_idle_earnings_pct();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetIdleDurationMax(JNIEnv*, jobject) {
+    return engine().get_idle_duration_max();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeGetLastLuckyBonus(JNIEnv*, jobject) {
+    return engine().get_last_lucky_bonus();
+}
+
 } // extern "C"

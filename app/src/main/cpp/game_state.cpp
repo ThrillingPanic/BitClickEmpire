@@ -1,8 +1,10 @@
 #include "game_state.h"
 #include "upgrade_data.h"
 #include "project_data.h"
+#include "boost_data.h"
 #include <sstream>
 #include <cmath>
+#include <cstdlib>
 
 GameState::GameState()
     : coins(0.0)
@@ -11,9 +13,13 @@ GameState::GameState()
     , click_multiplier(1.0)
     , income_multiplier(1.0)
     , game_time(0.0)
+    , auto_click_accum(0.0)
+    , lucky_timer(60.0)
+    , last_lucky_bonus(0.0)
 {
     init_upgrades();
     init_projects();
+    init_boosts();
 }
 
 void GameState::init_upgrades() {
@@ -24,11 +30,21 @@ void GameState::init_projects() {
     projects = create_default_projects();
 }
 
+void GameState::init_boosts() {
+    boosts = create_default_boosts();
+}
+
 double GameState::click() {
-    double earned = click_power * click_multiplier;
-    coins += earned;
-    total_coins_earned += earned;
-    return earned;
+    double base = effective_click_power() * effective_click_multiplier();
+    // Critical click check
+    double crit = get_crit_chance();
+    if (crit > 0.0) {
+        double roll = (double)std::rand() / RAND_MAX;
+        if (roll < crit) base *= 10.0;
+    }
+    coins += base;
+    total_coins_earned += base;
+    return base;
 }
 
 void GameState::tick(double dt) {
@@ -36,6 +52,34 @@ void GameState::tick(double dt) {
     double income = total_income_per_second() * dt;
     coins += income;
     total_coins_earned += income;
+
+    // Auto-clicker from boost
+    double auto_cps = get_auto_clicks_per_sec();
+    if (auto_cps > 0) {
+        auto_click_accum += dt * auto_cps;
+        while (auto_click_accum >= 1.0) {
+            auto_click_accum -= 1.0;
+            double click_earn = effective_click_power() * effective_click_multiplier();
+            coins += click_earn;
+            total_coins_earned += click_earn;
+        }
+    }
+
+    // Lucky bonus timer
+    double lucky_level = get_boost_value(BoostType::LuckyBonus);
+    if (lucky_level > 0) {
+        lucky_timer -= dt;
+        if (lucky_timer <= 0) {
+            lucky_timer = 60.0;
+            // Bonus = 10 * level * income_per_second (minimum 10*level)
+            double ips = total_income_per_second();
+            double bonus = 10.0 * lucky_level * (ips > 1 ? ips : 1.0);
+            coins += bonus;
+            total_coins_earned += bonus;
+            last_lucky_bonus = bonus;
+        }
+    }
+
     update_projects();
 }
 
@@ -44,7 +88,7 @@ double GameState::total_income_per_second() const {
     for (const auto& u : upgrades) {
         total += u.income_per_second();
     }
-    return total * income_multiplier;
+    return total * effective_income_multiplier();
 }
 
 bool GameState::buy_upgrade(int index) {
@@ -54,6 +98,51 @@ bool GameState::buy_upgrade(int index) {
 
 int GameState::upgrade_count() const {
     return static_cast<int>(upgrades.size());
+}
+
+// Boost system
+int GameState::boost_count() const {
+    return static_cast<int>(boosts.size());
+}
+
+bool GameState::buy_boost(int index) {
+    if (index < 0 || index >= static_cast<int>(boosts.size())) return false;
+    return boosts[index].buy(coins);
+}
+
+double GameState::get_boost_value(BoostType type) const {
+    for (const auto& b : boosts) {
+        if (b.type == type) return b.current_value();
+    }
+    return 0.0;
+}
+
+double GameState::effective_click_power() const {
+    return click_power + get_boost_value(BoostType::ClickPower);
+}
+
+double GameState::effective_click_multiplier() const {
+    return click_multiplier + get_boost_value(BoostType::ClickMultiplier);
+}
+
+double GameState::effective_income_multiplier() const {
+    return income_multiplier + get_boost_value(BoostType::IncomeBoost);
+}
+
+double GameState::get_idle_earnings_pct() const {
+    return get_boost_value(BoostType::IdleEarnings);
+}
+
+double GameState::get_idle_duration_max() const {
+    return get_boost_value(BoostType::IdleDuration);
+}
+
+double GameState::get_crit_chance() const {
+    return get_boost_value(BoostType::CriticalClick);
+}
+
+double GameState::get_auto_clicks_per_sec() const {
+    return get_boost_value(BoostType::AutoClicker);
 }
 
 int GameState::project_count() const {
@@ -159,6 +248,14 @@ std::string GameState::serialize() const {
             oss << worker_role_id(aw.role) << " " << aw.count << "\n";
         }
     }
+    // Serialize boosts
+    oss << "BOOSTS\n";
+    oss << boosts.size() << "\n";
+    for (const auto& b : boosts) {
+        oss << b.id << " " << b.level << "\n";
+    }
+    oss << "TIMERS\n";
+    oss << auto_click_accum << " " << lucky_timer << "\n";
     return oss.str();
 }
 
@@ -238,6 +335,27 @@ bool GameState::deserialize(const std::string& data) {
                 active_projects.push_back(ap);
             }
         }
+    }
+    // Try to read boosts section
+    if (iss >> marker && marker == "BOOSTS") {
+        size_t boost_count = 0;
+        if (iss >> boost_count) {
+            for (size_t i = 0; i < boost_count; i++) {
+                std::string bid;
+                int blevel = 0;
+                if (!(iss >> bid >> blevel)) break;
+                for (auto& b : boosts) {
+                    if (b.id == bid) {
+                        b.level = blevel;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    // Try to read timers section
+    if (iss >> marker && marker == "TIMERS") {
+        iss >> auto_click_accum >> lucky_timer;
     }
     return true;
 }

@@ -9,6 +9,8 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
     upgrade_data.cpp
     project.cpp
     project_data.cpp
+    boost.cpp
+    boost_data.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

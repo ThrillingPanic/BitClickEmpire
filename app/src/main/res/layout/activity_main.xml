@@ -190,6 +190,34 @@
                 android:background="#FF1A1A2E" />
         </LinearLayout>
 
+        <!-- Boosts tab -->
+        <LinearLayout
+            android:id="@+id/tab_boosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="  BOOSTS &amp; PERKS"
+                android:textSize="14sp"
+                android:textColor="#FFF7931A"
+                android:textStyle="bold"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:background="#FF0F3460"
+                android:fontFamily="monospace" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_boosts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FF1A1A2E" />
+        </LinearLayout>
+
     </FrameLayout>
 
     <!-- Bottom navigation tabs -->
@@ -207,7 +235,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="⛏ Click"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textColor="#FFF7931A"
             android:textStyle="bold"
             android:fontFamily="monospace"
@@ -227,7 +255,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="🏢 Upgrades"
-            android:textSize="14sp"
+            android:textSize="13sp"
             android:textColor="#88FFFFFF"
             android:fontFamily="monospace"
             android:background="?android:attr/selectableItemBackground"
@@ -246,7 +274,26 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="📋 Projects"
-            android:textSize="14sp"
+            android:textSize="13sp"
+            android:textColor="#88FFFFFF"
+            android:fontFamily="monospace"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#FF0F3460" />
+
+        <TextView
+            android:id="@+id/nav_boosts"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="⚡ Boosts"
+            android:textSize="13sp"
             android:textColor="#88FFFFFF"
             android:fontFamily="monospace"
             android:background="?android:attr/selectableItemBackground"
