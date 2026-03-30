@@ -25,10 +25,10 @@ public class ByteFloaterView extends View {
     private static final long SPAWN_CHECK_MS = 3000;   // check every 3 seconds
     private static final double SPAWN_CHANCE = 0.03;    // ~3% per check → roughly 1 per 100s on average
 
-    private static final float BYTE_SIZE = 48f;
+    private static final float BYTE_SIZE = 72f;
     private static final float SPEED_MIN = 1.2f;
     private static final float SPEED_MAX = 2.5f;
-    private static final float TAP_RADIUS = 80f;        // hit-area radius in px
+    private static final float TAP_RADIUS = 110f;        // hit-area radius in px
     private static final long BYTE_LIFETIME_MS = 8000;   // disappears after 8s if not caught
 
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
