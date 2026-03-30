@@ -769,18 +769,20 @@ public class MainActivity extends AppCompatActivity {
             int owned = bridge.nativeGetUpgradeOwned(position);
             boolean locked = bridge.nativeIsUpgradeLocked(position);
 
-            holder.tvName.setText(name + " (" + owned + ")");
+            // Hide locked upgrades entirely
             if (locked) {
-                holder.tvDesc.setText(desc + " 🔒 LOCKED");
-                holder.tvDesc.setTextColor(0xFF888888);
-            } else {
-                holder.tvDesc.setText(desc);
-                holder.tvDesc.setTextColor(0xFFCCCCCC);
+                holder.itemView.setVisibility(View.GONE);
+                return;
             }
+            
+            holder.itemView.setVisibility(View.VISIBLE);
+            holder.tvName.setText(name + " (" + owned + ")");
+            holder.tvDesc.setText(desc);
+            holder.tvDesc.setTextColor(0xFFCCCCCC);
             holder.tvCost.setText("Cost: " + formatNumber(cost) + " BTC");
             holder.tvIncome.setText("Earning: " + formatNumber(income) + " BTC/sec");
             
-            boolean canBuy = coins >= cost && !locked;
+            boolean canBuy = coins >= cost;
             holder.btnBuy.setEnabled(canBuy);
             holder.btnBuy.setAlpha(canBuy ? 1.0f : 0.5f);
         }
@@ -831,20 +833,13 @@ public class MainActivity extends AppCompatActivity {
             int difficulty = bridge.nativeGetProjectDifficulty(position);
             boolean locked = bridge.nativeIsProjectLocked(position);
 
+            // Hide locked projects entirely
             if (locked) {
-                holder.tvName.setText(name + " 🔒 LOCKED");
-                holder.tvName.setTextColor(0xFF888888);
-                holder.tvDesc.setText(desc + " - Complete the previous project to unlock");
-                holder.tvDesc.setTextColor(0xFF888888);
-                holder.tvTime.setTextColor(0xFF888888);
-                holder.tvReward.setTextColor(0xFF888888);
-                holder.tvDifficulty.setTextColor(0xFF888888);
-                holder.tvRoles.setTextColor(0xFF888888);
-                holder.btnStart.setEnabled(false);
-                holder.btnStart.setAlpha(0.3f);
+                holder.itemView.setVisibility(View.GONE);
                 return;
             }
 
+            holder.itemView.setVisibility(View.VISIBLE);
             holder.tvName.setText(name);
             holder.tvName.setTextColor(0xFFFFFFFF);
             holder.tvDesc.setText(desc);
