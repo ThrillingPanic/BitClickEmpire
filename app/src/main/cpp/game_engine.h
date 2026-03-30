@@ -1,6 +1,7 @@
 #pragma once
 
 #include "game_state.h"
+#include "mines_game.h"
 #include <chrono>
 #include <string>
 #include <vector>
@@ -66,11 +67,26 @@ public:
     double get_idle_duration_max() const;
     double get_last_lucky_bonus() const;
 
+    // Mines gambling
+    bool mines_start(int mine_count, double bet);
+    int mines_reveal(int index);
+    double mines_cash_out();
+    int mines_get_state() const;
+    int mines_get_mine_count() const;
+    double mines_get_bet() const;
+    double mines_get_multiplier() const;
+    double mines_get_next_multiplier() const;
+    double mines_get_potential_win() const;
+    int mines_get_tiles_revealed() const;
+    int mines_get_tile_state(int index) const;
+    double mines_get_max_bet() const;
+
     // Save/Load
     std::string save() const;
     bool load(const std::string& data);
 
 private:
     GameState state_;
+    MinesGame mines_game_;
     std::chrono::steady_clock::time_point last_update_;
 };

@@ -265,4 +265,66 @@ Java_com_bitclickempire_game_GameBridge_nativeGetLastLuckyBonus(JNIEnv*, jobject
     return engine().get_last_lucky_bonus();
 }
 
+// === Mines Gambling JNI ===
+
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesStart(JNIEnv*, jobject, jint mineCount, jdouble bet) {
+    return engine().mines_start(mineCount, bet);
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesReveal(JNIEnv*, jobject, jint index) {
+    return engine().mines_reveal(index);
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesCashOut(JNIEnv*, jobject) {
+    return engine().mines_cash_out();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetState(JNIEnv*, jobject) {
+    return engine().mines_get_state();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetMineCount(JNIEnv*, jobject) {
+    return engine().mines_get_mine_count();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetBet(JNIEnv*, jobject) {
+    return engine().mines_get_bet();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetMultiplier(JNIEnv*, jobject) {
+    return engine().mines_get_multiplier();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetNextMultiplier(JNIEnv*, jobject) {
+    return engine().mines_get_next_multiplier();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetPotentialWin(JNIEnv*, jobject) {
+    return engine().mines_get_potential_win();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetTilesRevealed(JNIEnv*, jobject) {
+    return engine().mines_get_tiles_revealed();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetTileState(JNIEnv*, jobject, jint index) {
+    return engine().mines_get_tile_state(index);
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeMinesGetMaxBet(JNIEnv*, jobject) {
+    return engine().mines_get_max_bet();
+}
+
 } // extern "C"
