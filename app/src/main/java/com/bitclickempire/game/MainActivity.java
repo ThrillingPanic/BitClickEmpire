@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
     private int purchaseMultiplier = 1;
     private TextView btnMult1, btnMult10, btnMult100, btnMultMax;
 
+    private int boostPurchaseMultiplier = 1;
+    private TextView btnBoostMult1, btnBoostMult10, btnBoostMult100, btnBoostMultMax;
+
     // Worker role ordinals matching C++ WorkerRole enum
     private static final int ROLE_PM = 0;
     private static final int ROLE_ENGINEER = 1;
@@ -165,6 +168,16 @@ public class MainActivity extends AppCompatActivity {
         rvBoosts.setLayoutManager(new LinearLayoutManager(this));
         boostAdapter = new BoostAdapter();
         rvBoosts.setAdapter(boostAdapter);
+
+        // Boost purchase multiplier buttons
+        btnBoostMult1 = findViewById(R.id.btn_boost_mult_1);
+        btnBoostMult10 = findViewById(R.id.btn_boost_mult_10);
+        btnBoostMult100 = findViewById(R.id.btn_boost_mult_100);
+        btnBoostMultMax = findViewById(R.id.btn_boost_mult_max);
+        btnBoostMult1.setOnClickListener(v -> setBoostPurchaseMultiplier(1));
+        btnBoostMult10.setOnClickListener(v -> setBoostPurchaseMultiplier(10));
+        btnBoostMult100.setOnClickListener(v -> setBoostPurchaseMultiplier(100));
+        btnBoostMultMax.setOnClickListener(v -> setBoostPurchaseMultiplier(-1));
 
         // Casino / Mines setup
         minesSetup = findViewById(R.id.mines_setup);
@@ -405,6 +418,15 @@ public class MainActivity extends AppCompatActivity {
         btn.setTextColor(active ? 0xFF1A1A2E : 0x88FFFFFF);
         btn.setBackgroundColor(active ? 0xFFF7931A : 0xFF16213E);
         btn.setTypeface(null, active ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+    }
+
+    private void setBoostPurchaseMultiplier(int mult) {
+        boostPurchaseMultiplier = mult;
+        setMultStyle(btnBoostMult1, mult == 1);
+        setMultStyle(btnBoostMult10, mult == 10);
+        setMultStyle(btnBoostMult100, mult == 100);
+        setMultStyle(btnBoostMultMax, mult == -1);
+        boostAdapter.notifyDataSetChanged();
     }
 
     private void refreshProjectsTab() {
@@ -1159,7 +1181,14 @@ public class MainActivity extends AppCompatActivity {
             holder.btnBuy.setOnClickListener(view -> {
                 int position = holder.getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    bridge.nativeBuyBoost(position);
+                    int count = boostPurchaseMultiplier;
+                    if (count == -1) {
+                        while (bridge.nativeBuyBoost(position)) { /* buy max */ }
+                    } else {
+                        for (int i = 0; i < count; i++) {
+                            if (!bridge.nativeBuyBoost(position)) break;
+                        }
+                    }
                     notifyItemChanged(position);
                     updateUI();
                 }
@@ -1193,11 +1222,45 @@ public class MainActivity extends AppCompatActivity {
                 holder.btnBuy.setAlpha(0.4f);
                 holder.btnBuy.setText("MAX");
             } else {
-                holder.tvCost.setText("Cost: " + formatNumber(cost) + " BTC");
+                int remaining = maxLevel - level;
+                int buyCount;
+                double totalCost;
+
+                if (boostPurchaseMultiplier == -1) {
+                    // Max: buy as many as affordable up to remaining levels
+                    totalCost = 0;
+                    double simCoins = coins;
+                    double simCost = cost;
+                    buyCount = 0;
+                    while (buyCount < remaining && simCoins >= simCost) {
+                        totalCost += simCost;
+                        simCoins -= simCost;
+                        simCost *= 1.15;
+                        buyCount++;
+                    }
+                    if (buyCount < 1) { totalCost = cost; buyCount = 0; }
+                } else {
+                    buyCount = Math.min(boostPurchaseMultiplier, remaining);
+                    totalCost = 0;
+                    double simCost = cost;
+                    for (int i = 0; i < buyCount; i++) {
+                        totalCost += simCost;
+                        simCost *= 1.15;
+                    }
+                }
+
+                holder.tvCost.setText("Cost: " + formatNumber(totalCost) + " BTC");
                 holder.tvCost.setTextColor(0xFFF7931A);
                 holder.btnBuy.setEnabled(coins >= cost);
                 holder.btnBuy.setAlpha(coins >= cost ? 1.0f : 0.5f);
-                holder.btnBuy.setText("BUY");
+
+                if (boostPurchaseMultiplier == -1) {
+                    holder.btnBuy.setText(buyCount > 0 ? "BUY x" + buyCount : "BUY");
+                } else if (buyCount > 1) {
+                    holder.btnBuy.setText("BUY x" + buyCount);
+                } else {
+                    holder.btnBuy.setText("BUY");
+                }
             }
         }
 
