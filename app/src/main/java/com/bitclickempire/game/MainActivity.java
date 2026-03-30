@@ -354,6 +354,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Button btnReset = new Button(this);
+        btnReset.setText("🗑 Reset Progress");
+        btnReset.setTextColor(0xFFFFFFFF);
+        btnReset.setBackgroundTintList(ColorStateList.valueOf(0xFF888888));
+        LinearLayout.LayoutParams rlp = new LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        rlp.topMargin = 32;
+        btnReset.setLayoutParams(rlp);
+        layout.addView(btnReset);
+
+        btnReset.setOnClickListener(v -> {
+            new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog)
+                .setTitle("Reset Progress")
+                .setMessage("Are you sure? This will erase ALL progress permanently.")
+                .setPositiveButton("Reset", (d, w) -> {
+                    bridge.nativeInit();
+                    getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit().clear().apply();
+                    updateUI();
+                    dialog.dismiss();
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+        });
+
         dialog.show();
     }
 
