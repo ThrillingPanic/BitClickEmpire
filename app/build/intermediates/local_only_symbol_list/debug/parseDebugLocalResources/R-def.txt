@@ -1,0 +1,26 @@
+R_DEF: Internal format may change without notice
+local
+color accent_blue
+color bitcoin_orange
+color card_bg
+color dark_bg
+color income_green
+color white
+drawable bitcoin_bg
+drawable ic_launcher_background
+drawable ic_launcher_foreground
+id btn_bitcoin
+id btn_buy
+id rv_upgrades
+id tv_click_power
+id tv_coins
+id tv_per_second
+id tv_upgrade_cost
+id tv_upgrade_desc
+id tv_upgrade_income
+id tv_upgrade_name
+layout activity_main
+layout item_upgrade
+mipmap ic_launcher
+string app_name
+style Theme.BitClickEmpire

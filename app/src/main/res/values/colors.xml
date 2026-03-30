@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bitcoin_orange">#FFF7931A</color>
+    <color name="dark_bg">#FF1A1A2E</color>
+    <color name="card_bg">#FF16213E</color>
+    <color name="accent_blue">#FF0F3460</color>
+    <color name="income_green">#FF4EC9B0</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

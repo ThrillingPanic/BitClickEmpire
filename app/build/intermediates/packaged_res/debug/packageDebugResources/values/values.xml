@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent_blue">#FF0F3460</color>
+    <color name="bitcoin_orange">#FFF7931A</color>
+    <color name="card_bg">#FF16213E</color>
+    <color name="dark_bg">#FF1A1A2E</color>
+    <color name="income_green">#FF4EC9B0</color>
+    <color name="white">#FFFFFFFF</color>
+    <string name="app_name">BitClick Empire</string>
+    <style name="Theme.BitClickEmpire" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#FFF7931A</item>
+        <item name="colorPrimaryVariant">#FFE68A00</item>
+        <item name="colorOnPrimary">#FF1A1A2E</item>
+        <item name="colorSecondary">#FF0F3460</item>
+        <item name="colorOnSecondary">#FFFFFFFF</item>
+        <item name="android:statusBarColor">#FF16213E</item>
+        <item name="android:navigationBarColor">#FF1A1A2E</item>
+        <item name="android:windowBackground">@color/dark_bg</item>
+    </style>
+</resources>

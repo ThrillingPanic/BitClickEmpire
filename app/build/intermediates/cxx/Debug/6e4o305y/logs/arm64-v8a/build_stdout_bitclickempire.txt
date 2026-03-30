@@ -1,0 +1,2 @@
+ninja: Entering directory `/Users/donniesaucier/BitClickEmpire/app/.cxx/Debug/6e4o305y/arm64-v8a'
+ninja: no work to do.
