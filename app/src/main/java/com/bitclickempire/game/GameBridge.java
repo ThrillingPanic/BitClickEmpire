@@ -61,4 +61,18 @@ public class GameBridge {
     public native double nativeGetIdleEarningsPct();
     public native double nativeGetIdleDurationMax();
     public native double nativeGetLastLuckyBonus();
+
+    // Mines gambling
+    public native boolean nativeMinesStart(int mineCount, double bet);
+    public native int nativeMinesReveal(int index);
+    public native double nativeMinesCashOut();
+    public native int nativeMinesGetState();
+    public native int nativeMinesGetMineCount();
+    public native double nativeMinesGetBet();
+    public native double nativeMinesGetMultiplier();
+    public native double nativeMinesGetNextMultiplier();
+    public native double nativeMinesGetPotentialWin();
+    public native int nativeMinesGetTilesRevealed();
+    public native int nativeMinesGetTileState(int index);
+    public native double nativeMinesGetMaxBet();
 }

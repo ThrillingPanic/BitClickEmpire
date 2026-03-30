@@ -11,6 +11,7 @@ add_library(${CMAKE_PROJECT_NAME} SHARED
     project_data.cpp
     boost.cpp
     boost_data.cpp
+    mines_game.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

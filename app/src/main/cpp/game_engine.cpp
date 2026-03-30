@@ -206,6 +206,33 @@ double GameEngine::get_last_lucky_bonus() const {
     return state_.last_lucky_bonus;
 }
 
+// Mines gambling
+bool GameEngine::mines_start(int mine_count, double bet) {
+    return mines_game_.start(mine_count, bet, state_.coins);
+}
+
+int GameEngine::mines_reveal(int index) {
+    return mines_game_.reveal(index);
+}
+
+double GameEngine::mines_cash_out() {
+    double winnings = mines_game_.cash_out(state_.coins);
+    if (winnings > 0) {
+        state_.total_coins_earned += winnings;
+    }
+    return winnings;
+}
+
+int GameEngine::mines_get_state() const { return static_cast<int>(mines_game_.get_state()); }
+int GameEngine::mines_get_mine_count() const { return mines_game_.get_mine_count(); }
+double GameEngine::mines_get_bet() const { return mines_game_.get_bet(); }
+double GameEngine::mines_get_multiplier() const { return mines_game_.get_multiplier(); }
+double GameEngine::mines_get_next_multiplier() const { return mines_game_.get_next_multiplier(); }
+double GameEngine::mines_get_potential_win() const { return mines_game_.get_potential_win(); }
+int GameEngine::mines_get_tiles_revealed() const { return mines_game_.get_tiles_revealed(); }
+int GameEngine::mines_get_tile_state(int index) const { return mines_game_.get_tile_state(index); }
+double GameEngine::mines_get_max_bet() const { return state_.coins * 0.10; }
+
 std::string GameEngine::save() const {
     return state_.serialize();
 }

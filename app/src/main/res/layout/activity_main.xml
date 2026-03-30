@@ -218,6 +218,307 @@
                 android:background="#FF1A1A2E" />
         </LinearLayout>
 
+        <!-- Casino tab -->
+        <ScrollView
+            android:id="@+id/tab_casino"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:background="#FF1A1A2E">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Game selector header -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:background="#FF0F3460"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="💣 MINES"
+                        android:textSize="13sp"
+                        android:textColor="#FFF7931A"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="🃏 SOON"
+                        android:textSize="13sp"
+                        android:textColor="#44FFFFFF"
+                        android:fontFamily="monospace" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="🎡 SOON"
+                        android:textSize="13sp"
+                        android:textColor="#44FFFFFF"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <!-- Max bet display -->
+                <TextView
+                    android:id="@+id/tv_casino_balance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Max Bet: 0.0 BTC"
+                    android:textSize="13sp"
+                    android:textColor="#AAFFFFFF"
+                    android:gravity="center"
+                    android:padding="6dp"
+                    android:fontFamily="monospace" />
+
+                <!-- ===== Mines Setup Section ===== -->
+                <LinearLayout
+                    android:id="@+id/mines_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Mine count selector -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Number of Mines"
+                        android:textSize="13sp"
+                        android:textColor="#CCFFFFFF"
+                        android:fontFamily="monospace"
+                        android:paddingBottom="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <Button
+                            android:id="@+id/btn_mine_minus"
+                            android:layout_width="48dp"
+                            android:layout_height="40dp"
+                            android:text="−"
+                            android:textSize="18sp"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#FF0F3460" />
+
+                        <TextView
+                            android:id="@+id/tv_mine_count"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:text="3"
+                            android:textSize="24sp"
+                            android:textColor="#FFF7931A"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace" />
+
+                        <Button
+                            android:id="@+id/btn_mine_plus"
+                            android:layout_width="48dp"
+                            android:layout_height="40dp"
+                            android:text="+"
+                            android:textSize="18sp"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#FF0F3460" />
+                    </LinearLayout>
+
+                    <!-- Bet input -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Bet Amount (BTC)"
+                        android:textSize="13sp"
+                        android:textColor="#CCFFFFFF"
+                        android:fontFamily="monospace"
+                        android:paddingTop="12dp"
+                        android:paddingBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/et_mines_bet"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:inputType="numberDecimal"
+                        android:hint="Enter bet..."
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#44FFFFFF"
+                        android:background="#FF0F3460"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:fontFamily="monospace" />
+
+                    <!-- Quick bet buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp">
+
+                        <Button
+                            android:id="@+id/btn_bet_25"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="4dp"
+                            android:text="25%"
+                            android:textSize="12sp"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#FF0F3460"
+                            android:fontFamily="monospace" />
+
+                        <Button
+                            android:id="@+id/btn_bet_50"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginEnd="4dp"
+                            android:text="50%"
+                            android:textSize="12sp"
+                            android:textColor="#FFFFFF"
+                            android:backgroundTint="#FF0F3460"
+                            android:fontFamily="monospace" />
+
+                        <Button
+                            android:id="@+id/btn_bet_max"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="4dp"
+                            android:text="MAX"
+                            android:textSize="12sp"
+                            android:textColor="#FF1A1A2E"
+                            android:textStyle="bold"
+                            android:backgroundTint="#FFF7931A"
+                            android:fontFamily="monospace" />
+                    </LinearLayout>
+
+                    <!-- Start button -->
+                    <Button
+                        android:id="@+id/btn_start_mines"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="16dp"
+                        android:text="⛏ START GAME"
+                        android:textSize="16sp"
+                        android:textColor="#FF1A1A2E"
+                        android:textStyle="bold"
+                        android:backgroundTint="#FFF7931A"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <!-- ===== Mines Game Section ===== -->
+                <LinearLayout
+                    android:id="@+id/mines_game_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp"
+                    android:visibility="gone">
+
+                    <!-- Multiplier display -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingBottom="4dp">
+
+                        <TextView
+                            android:id="@+id/tv_mines_multiplier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1.00x"
+                            android:textSize="28sp"
+                            android:textColor="#FF4EC9B0"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace" />
+
+                        <TextView
+                            android:id="@+id/tv_mines_next"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="  → 1.10x"
+                            android:textSize="16sp"
+                            android:textColor="#88FFFFFF"
+                            android:fontFamily="monospace" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_mines_potential"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Potential: 0 BTC"
+                        android:textSize="14sp"
+                        android:textColor="#FFF7931A"
+                        android:fontFamily="monospace"
+                        android:paddingBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tv_mines_info"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="#88FFFFFF"
+                        android:fontFamily="monospace"
+                        android:paddingBottom="8dp" />
+
+                    <!-- Grid container (populated programmatically) -->
+                    <LinearLayout
+                        android:id="@+id/mines_grid_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center" />
+
+                    <!-- Action button -->
+                    <Button
+                        android:id="@+id/btn_mines_action"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="12dp"
+                        android:text="💰 CASH OUT"
+                        android:textSize="16sp"
+                        android:textColor="#FF1A1A2E"
+                        android:textStyle="bold"
+                        android:backgroundTint="#FF4EC9B0"
+                        android:fontFamily="monospace" />
+
+                    <!-- Result text -->
+                    <TextView
+                        android:id="@+id/tv_mines_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:paddingTop="8dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
     </FrameLayout>
 
     <!-- Bottom navigation tabs -->
@@ -235,7 +536,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="⛏ Click"
-            android:textSize="13sp"
+            android:textSize="11sp"
             android:textColor="#FFF7931A"
             android:textStyle="bold"
             android:fontFamily="monospace"
@@ -254,8 +555,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="🏢 Upgrades"
-            android:textSize="13sp"
+            android:text="🏢 Biz"
+            android:textSize="11sp"
             android:textColor="#88FFFFFF"
             android:fontFamily="monospace"
             android:background="?android:attr/selectableItemBackground"
@@ -273,8 +574,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="📋 Projects"
-            android:textSize="13sp"
+            android:text="📋 Jobs"
+            android:textSize="11sp"
             android:textColor="#88FFFFFF"
             android:fontFamily="monospace"
             android:background="?android:attr/selectableItemBackground"
@@ -292,8 +593,27 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="⚡ Boosts"
-            android:textSize="13sp"
+            android:text="⚡ Boost"
+            android:textSize="11sp"
+            android:textColor="#88FFFFFF"
+            android:fontFamily="monospace"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#FF0F3460" />
+
+        <TextView
+            android:id="@+id/nav_casino"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="🎰 Casino"
+            android:textSize="11sp"
             android:textColor="#88FFFFFF"
             android:fontFamily="monospace"
             android:background="?android:attr/selectableItemBackground"
