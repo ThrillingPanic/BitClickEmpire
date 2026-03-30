@@ -476,12 +476,11 @@ public class MainActivity extends AppCompatActivity {
             .show();
     }
 
-    private void showStartProjectDialog(int projectIndex) {
+    private void startProjectDirectly(int projectIndex) {
         int roleCount = bridge.nativeGetProjectRequiredRoleCount(projectIndex);
         int[] assignedRoles = new int[roleCount];
         int[] assignedCounts = new int[roleCount];
 
-        // Pre-fill with minimum requirements
         for (int i = 0; i < roleCount; i++) {
             String roleName = bridge.nativeGetProjectRequiredRoleName(projectIndex, i);
             int required = bridge.nativeGetProjectRequiredRoleAmount(projectIndex, i);
@@ -490,35 +489,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Check if player has enough workers
-        boolean canStart = true;
-        StringBuilder info = new StringBuilder();
-        info.append(bridge.nativeGetProjectName(projectIndex)).append("\n\n");
-        info.append("Staff required:\n");
         for (int i = 0; i < roleCount; i++) {
             int avail = bridge.nativeGetWorkerAvailable(assignedRoles[i]);
-            String roleName = bridge.nativeGetProjectRequiredRoleName(projectIndex, i);
-            int required = assignedCounts[i];
-            info.append("  ").append(roleName).append(": ")
-                .append(required).append(" (").append(avail).append(" available)\n");
-            if (avail < required) canStart = false;
-        }
-        info.append("\nReward: ").append(formatNumber(bridge.nativeGetProjectReward(projectIndex))).append(" BTC");
-        info.append("\nTime: ").append(formatTime(bridge.nativeGetProjectBaseTime(projectIndex)));
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.Theme_BitClickEmpire)
-            .setTitle("Start Project")
-            .setMessage(info.toString())
-            .setNegativeButton("Cancel", null);
-
-        if (canStart) {
-            builder.setPositiveButton("Start", (dialog, which) -> {
-                bridge.nativeStartProject(projectIndex, assignedRoles, assignedCounts, roleCount);
-                refreshProjectsTab();
-                updateUI();
-            });
+            if (avail < assignedCounts[i]) {
+                String roleName = bridge.nativeGetProjectRequiredRoleName(projectIndex, i);
+                Toast.makeText(this, "Not enough " + roleName + "s available", Toast.LENGTH_SHORT).show();
+                return;
+            }
         }
 
-        builder.show();
+        bridge.nativeStartProject(projectIndex, assignedRoles, assignedCounts, roleCount);
+        refreshProjectsTab();
+        updateUI();
     }
 
     private int roleNameToOrdinal(String name) {
@@ -921,7 +903,7 @@ public class MainActivity extends AppCompatActivity {
             holder.btnStart.setOnClickListener(view -> {
                 int position = holder.getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    showStartProjectDialog(position);
+                    startProjectDirectly(position);
                 }
             });
             return holder;
