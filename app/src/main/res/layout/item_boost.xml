@@ -76,7 +76,7 @@
     <!-- Right: Buy button -->
     <Button
         android:id="@+id/btn_buy_boost"
-        android:layout_width="72dp"
+        android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="center_vertical"
         android:text="BUY"
@@ -84,6 +84,7 @@
         android:textColor="#FF1A1A2E"
         android:textStyle="bold"
         android:backgroundTint="#FFF7931A"
-        android:fontFamily="monospace" />
+        android:fontFamily="monospace"
+        android:minWidth="80dp" />
 
 </LinearLayout>
