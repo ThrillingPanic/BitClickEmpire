@@ -782,6 +782,14 @@ public class MainActivity extends AppCompatActivity {
             holder.tvCost.setText("Cost: " + formatNumber(cost) + " BTC");
             holder.tvIncome.setText("Earning: " + formatNumber(income) + " BTC/sec");
             
+            // Show indicator if next upgrade exists and is locked
+            int nextPos = position + 1;
+            if (nextPos < bridge.nativeGetUpgradeCount() && bridge.nativeIsUpgradeLocked(nextPos)) {
+                holder.tvNextLocked.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvNextLocked.setVisibility(View.GONE);
+            }
+            
             boolean canBuy = coins >= cost;
             holder.btnBuy.setEnabled(canBuy);
             holder.btnBuy.setAlpha(canBuy ? 1.0f : 0.5f);
@@ -793,7 +801,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         class VH extends RecyclerView.ViewHolder {
-            TextView tvName, tvDesc, tvCost, tvIncome;
+            TextView tvName, tvDesc, tvCost, tvIncome, tvNextLocked;
             Button btnBuy;
 
             VH(View v) {
@@ -802,6 +810,7 @@ public class MainActivity extends AppCompatActivity {
                 tvDesc = v.findViewById(R.id.tv_upgrade_desc);
                 tvCost = v.findViewById(R.id.tv_upgrade_cost);
                 tvIncome = v.findViewById(R.id.tv_upgrade_income);
+                tvNextLocked = v.findViewById(R.id.tv_next_locked);
                 btnBuy = v.findViewById(R.id.btn_buy);
             }
         }
@@ -867,6 +876,14 @@ public class MainActivity extends AppCompatActivity {
             }
             holder.tvRoles.setText(roles.toString());
 
+            // Show indicator if next project exists and is locked
+            int nextPos = position + 1;
+            if (nextPos < bridge.nativeGetProjectCount() && bridge.nativeIsProjectLocked(nextPos)) {
+                holder.tvNextLockedProject.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvNextLockedProject.setVisibility(View.GONE);
+            }
+
             // Check if player can start (has enough workers)
             boolean canStart = true;
             for (int i = 0; i < roleCount; i++) {
@@ -885,7 +902,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         class VH extends RecyclerView.ViewHolder {
-            TextView tvName, tvDesc, tvTime, tvReward, tvDifficulty, tvRoles;
+            TextView tvName, tvDesc, tvTime, tvReward, tvDifficulty, tvRoles, tvNextLockedProject;
             Button btnStart;
 
             VH(View v) {
@@ -896,6 +913,7 @@ public class MainActivity extends AppCompatActivity {
                 tvReward = v.findViewById(R.id.tv_project_reward);
                 tvDifficulty = v.findViewById(R.id.tv_project_difficulty);
                 tvRoles = v.findViewById(R.id.tv_project_roles);
+                tvNextLockedProject = v.findViewById(R.id.tv_next_locked_project);
                 btnStart = v.findViewById(R.id.btn_start_project);
             }
         }
