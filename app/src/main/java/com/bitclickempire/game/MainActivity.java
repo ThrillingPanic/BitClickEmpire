@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int TAB_CASINO = 4;
     private int currentTab = TAB_CLICK;
 
+    // Purchase multiplier: 1, 10, 100, or -1 for max
+    private int purchaseMultiplier = 1;
+    private TextView btnMult1, btnMult10, btnMult100, btnMultMax;
+
     // Worker role ordinals matching C++ WorkerRole enum
     private static final int ROLE_PM = 0;
     private static final int ROLE_ENGINEER = 1;
@@ -145,6 +149,16 @@ public class MainActivity extends AppCompatActivity {
         tvActiveHeader = findViewById(R.id.tv_active_header);
         btnHire = findViewById(R.id.btn_hire);
         btnHire.setOnClickListener(v -> showHireDialog());
+
+        // Purchase multiplier buttons
+        btnMult1 = findViewById(R.id.btn_mult_1);
+        btnMult10 = findViewById(R.id.btn_mult_10);
+        btnMult100 = findViewById(R.id.btn_mult_100);
+        btnMultMax = findViewById(R.id.btn_mult_max);
+        btnMult1.setOnClickListener(v -> setPurchaseMultiplier(1));
+        btnMult10.setOnClickListener(v -> setPurchaseMultiplier(10));
+        btnMult100.setOnClickListener(v -> setPurchaseMultiplier(100));
+        btnMultMax.setOnClickListener(v -> setPurchaseMultiplier(-1));
 
         // Boosts tab
         rvBoosts = findViewById(R.id.rv_boosts);
@@ -375,6 +389,22 @@ public class MainActivity extends AppCompatActivity {
     private void setNavStyle(TextView nav, boolean active) {
         nav.setTextColor(active ? 0xFFF7931A : 0x88FFFFFF);
         nav.setTypeface(null, active ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
+    }
+
+    private void setPurchaseMultiplier(int mult) {
+        purchaseMultiplier = mult;
+        // Update button styles
+        setMultStyle(btnMult1, mult == 1);
+        setMultStyle(btnMult10, mult == 10);
+        setMultStyle(btnMult100, mult == 100);
+        setMultStyle(btnMultMax, mult == -1);
+        upgradeAdapter.notifyDataSetChanged();
+    }
+
+    private void setMultStyle(TextView btn, boolean active) {
+        btn.setTextColor(active ? 0xFF1A1A2E : 0x88FFFFFF);
+        btn.setBackgroundColor(active ? 0xFFF7931A : 0xFF16213E);
+        btn.setTypeface(null, active ? android.graphics.Typeface.BOLD : android.graphics.Typeface.NORMAL);
     }
 
     private void refreshProjectsTab() {
@@ -824,7 +854,16 @@ public class MainActivity extends AppCompatActivity {
             holder.btnBuy.setOnClickListener(view -> {
                 int position = holder.getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    bridge.nativeBuyUpgrade(position);
+                    int count = purchaseMultiplier;
+                    if (count == -1) {
+                        // Max: buy as many as affordable
+                        int bought = 0;
+                        while (bridge.nativeBuyUpgrade(position)) bought++;
+                    } else {
+                        for (int i = 0; i < count; i++) {
+                            if (!bridge.nativeBuyUpgrade(position)) break;
+                        }
+                    }
                     updateUI();
                 }
             });
@@ -855,9 +894,44 @@ public class MainActivity extends AppCompatActivity {
             holder.tvName.setText(name + " (" + owned + ")");
             holder.tvDesc.setText(desc);
             holder.tvDesc.setTextColor(0xFFCCCCCC);
-            holder.tvCost.setText("Cost: " + formatNumber(cost) + " BTC");
+            // Calculate total cost for multiplier
+            double totalCost = cost;
+            int buyCount = 1;
+            if (purchaseMultiplier == -1) {
+                // Max: sum costs until can't afford
+                totalCost = 0;
+                double simCoins = coins;
+                double simCost = cost;
+                while (simCoins >= simCost) {
+                    totalCost += simCost;
+                    simCoins -= simCost;
+                    simCost *= 1.15; // matches upgrade cost scaling
+                    buyCount++;
+                }
+                buyCount--;
+                if (buyCount < 1) { totalCost = cost; buyCount = 0; }
+            } else if (purchaseMultiplier > 1) {
+                totalCost = 0;
+                double simCost = cost;
+                for (int i = 0; i < purchaseMultiplier; i++) {
+                    totalCost += simCost;
+                    simCost *= 1.15;
+                }
+                buyCount = purchaseMultiplier;
+            }
+
+            holder.tvCost.setText("Cost: " + formatNumber(totalCost) + " BTC");
             holder.tvIncome.setText("Earning: " + formatNumber(income) + " BTC/sec");
-            
+
+            // Buy button label
+            if (purchaseMultiplier == -1) {
+                holder.btnBuy.setText(buyCount > 0 ? "BUY x" + buyCount : "BUY");
+            } else if (purchaseMultiplier > 1) {
+                holder.btnBuy.setText("BUY x" + purchaseMultiplier);
+            } else {
+                holder.btnBuy.setText("BUY");
+            }
+
             // Show indicator if next upgrade exists and is locked
             int nextPos = position + 1;
             if (nextPos < bridge.nativeGetUpgradeCount() && bridge.nativeIsUpgradeLocked(nextPos)) {

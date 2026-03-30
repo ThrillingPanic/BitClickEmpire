@@ -127,18 +127,91 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="  SOFTWARE EMPIRE"
-                android:textSize="14sp"
-                android:textColor="#FFF7931A"
-                android:textStyle="bold"
-                android:paddingStart="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="4dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 android:background="#FF0F3460"
-                android:fontFamily="monospace" />
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="  SOFTWARE EMPIRE"
+                    android:textSize="14sp"
+                    android:textColor="#FFF7931A"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace" />
+
+                <TextView
+                    android:id="@+id/btn_mult_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:text="x1"
+                    android:textSize="11sp"
+                    android:textColor="#FF1A1A2E"
+                    android:textStyle="bold"
+                    android:fontFamily="monospace"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:background="#FFF7931A"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/btn_mult_10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:text="x10"
+                    android:textSize="11sp"
+                    android:textColor="#88FFFFFF"
+                    android:fontFamily="monospace"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:background="#FF16213E"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/btn_mult_100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:text="x100"
+                    android:textSize="11sp"
+                    android:textColor="#88FFFFFF"
+                    android:fontFamily="monospace"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:background="#FF16213E"
+                    android:clickable="true"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/btn_mult_max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="28dp"
+                    android:gravity="center"
+                    android:text="Max"
+                    android:textSize="11sp"
+                    android:textColor="#88FFFFFF"
+                    android:fontFamily="monospace"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_marginStart="4dp"
+                    android:background="#FF16213E"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_upgrades"
