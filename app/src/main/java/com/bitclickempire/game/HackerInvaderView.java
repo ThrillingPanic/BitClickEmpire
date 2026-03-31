@@ -39,8 +39,8 @@ public class HackerInvaderView extends View {
     private static final int MAX_HACKERS = 5;               // max on screen at once
 
     // Hacker appearance
-    private static final float HACKER_SIZE = 48f;
-    private static final float TAP_RADIUS = 80f;            // hit-area radius in px
+    private static final float HACKER_SIZE = 96f;
+    private static final float TAP_RADIUS = 120f;           // hit-area radius in px
     private static final float ARRIVAL_RADIUS = 90f;        // how close to center = "reached"
 
     // Movement
