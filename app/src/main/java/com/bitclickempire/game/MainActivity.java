@@ -100,6 +100,29 @@ public class MainActivity extends AppCompatActivity {
     private TextView[] mineTiles;
     private int selectedMineCount = 3;
 
+    // Game selector
+    private static final int CASINO_GAME_MINES = 0;
+    private static final int CASINO_GAME_BLACKJACK = 1;
+    private int currentCasinoGame = CASINO_GAME_MINES;
+
+    // Blackjack game UI
+    private View blackjackLockedMessage;
+    private View blackjackSetup;
+    private View blackjackGameSection;
+    private EditText etBlackjackBet;
+    private Button btnStartBlackjack;
+    private Button btnBlackjackHit;
+    private Button btnBlackjackStand;
+    private TextView tvPlayerValue;
+    private TextView tvDealerValue;
+    private TextView tvBjBet;
+    private TextView tvBjPotential;
+    private TextView tvBjResult;
+    private LinearLayout blackjackPlayerCards;
+    private LinearLayout blackjackDealerCards;
+    private TextView btnGameMines;
+    private TextView btnGameBlackjack;
+
     private static final long TICK_MS = 50;
     private static final String PREFS_NAME = "bitclick_save";
     private static final String SAVE_KEY = "game_state";
@@ -228,6 +251,43 @@ public class MainActivity extends AppCompatActivity {
                 resetMinesUI();
             }
         });
+
+        // Blackjack UI initialization
+        blackjackLockedMessage = findViewById(R.id.blackjack_locked_message);
+        blackjackSetup = findViewById(R.id.blackjack_setup);
+        blackjackGameSection = findViewById(R.id.blackjack_game_section);
+        etBlackjackBet = findViewById(R.id.et_blackjack_bet);
+        btnStartBlackjack = findViewById(R.id.btn_start_blackjack);
+        btnBlackjackHit = findViewById(R.id.btn_bj_hit);
+        btnBlackjackStand = findViewById(R.id.btn_bj_stand);
+        tvPlayerValue = findViewById(R.id.tv_player_value);
+        tvDealerValue = findViewById(R.id.tv_dealer_value);
+        tvBjBet = findViewById(R.id.tv_bj_bet);
+        tvBjPotential = findViewById(R.id.tv_bj_potential);
+        tvBjResult = findViewById(R.id.tv_bj_result);
+        blackjackPlayerCards = findViewById(R.id.blackjack_player_cards);
+        blackjackDealerCards = findViewById(R.id.blackjack_dealer_cards);
+        btnGameMines = findViewById(R.id.btn_game_mines);
+        btnGameBlackjack = findViewById(R.id.btn_game_blackjack);
+
+        // Blackjack event listeners
+        findViewById(R.id.btn_bj_bet_25).setOnClickListener(v -> {
+            double max = bridge.nativeBlackjackGetMaxBet();
+            etBlackjackBet.setText(String.format("%.1f", max * 0.25));
+        });
+        findViewById(R.id.btn_bj_bet_50).setOnClickListener(v -> {
+            double max = bridge.nativeBlackjackGetMaxBet();
+            etBlackjackBet.setText(String.format("%.1f", max * 0.50));
+        });
+        findViewById(R.id.btn_bj_bet_max).setOnClickListener(v -> {
+            double max = bridge.nativeBlackjackGetMaxBet();
+            etBlackjackBet.setText(String.format("%.1f", max));
+        });
+        btnStartBlackjack.setOnClickListener(v -> startBlackjackGame());
+        btnBlackjackHit.setOnClickListener(v -> onBlackjackHit());
+        btnBlackjackStand.setOnClickListener(v -> onBlackjackStand());
+        btnGameMines.setOnClickListener(v -> selectCasinoGame(0));  // Mines
+        btnGameBlackjack.setOnClickListener(v -> selectCasinoGame(1));  // Blackjack
 
         // Tab navigation
         tabClick = findViewById(R.id.tab_click);
@@ -644,29 +704,73 @@ public class MainActivity extends AppCompatActivity {
 
     private void refreshCasinoTab() {
         updateCasinoBalance();
-        int minesState = bridge.nativeMinesGetState();
-        if (minesState == 1) {
-            // Game active - show game section
-            minesSetup.setVisibility(View.GONE);
-            minesGameSection.setVisibility(View.VISIBLE);
-            if (mineTiles == null) buildMinesGrid();
-            updateMineTiles();
-            updateMinesDisplay();
-            updateMinesActionButton();
-        } else if (minesState == 2 || minesState == 3) {
-            // Game finished - show result
-            minesSetup.setVisibility(View.GONE);
-            minesGameSection.setVisibility(View.VISIBLE);
-            if (mineTiles != null) updateMineTiles();
-            updateMinesDisplay();
-            btnMinesAction.setText("\uD83C\uDFAE NEW GAME");
-            btnMinesAction.setEnabled(true);
-            btnMinesAction.setAlpha(1.0f);
-            btnMinesAction.setBackgroundTintList(ColorStateList.valueOf(0xFFF7931A));
+
+        if (currentCasinoGame == CASINO_GAME_BLACKJACK) {
+            // Blackjack UI
+            if (bridge.nativeIsBlackjackUnlocked()) {
+                blackjackLockedMessage.setVisibility(View.GONE);
+                int bjState = bridge.nativeBlackjackGetState();
+                if (bjState == 1) {
+                    // Game active
+                    blackjackSetup.setVisibility(View.GONE);
+                    blackjackGameSection.setVisibility(View.VISIBLE);
+                    updateBlackjackDisplay();
+                } else if (bjState == 2 || bjState == 3 || bjState == 4) {
+                    // Game finished
+                    blackjackSetup.setVisibility(View.GONE);
+                    blackjackGameSection.setVisibility(View.VISIBLE);
+                    updateBlackjackDisplay();
+                    btnBlackjackHit.setEnabled(false);
+                    btnBlackjackStand.setEnabled(false);
+                    finishBlackjackGame();
+                } else {
+                    // No game - show setup
+                    blackjackSetup.setVisibility(View.VISIBLE);
+                    blackjackGameSection.setVisibility(View.GONE);
+                    btnBlackjackHit.setEnabled(true);
+                    btnBlackjackStand.setEnabled(true);
+                }
+                // Hide mines UI
+                minesSetup.setVisibility(View.GONE);
+                minesGameSection.setVisibility(View.GONE);
+            } else {
+                // Blackjack locked
+                blackjackLockedMessage.setVisibility(View.VISIBLE);
+                blackjackSetup.setVisibility(View.GONE);
+                blackjackGameSection.setVisibility(View.GONE);
+                minesSetup.setVisibility(View.GONE);
+                minesGameSection.setVisibility(View.GONE);
+            }
         } else {
-            // No game - show setup
-            minesSetup.setVisibility(View.VISIBLE);
-            minesGameSection.setVisibility(View.GONE);
+            // Mines UI (default)
+            blackjackLockedMessage.setVisibility(View.GONE);
+            blackjackSetup.setVisibility(View.GONE);
+            blackjackGameSection.setVisibility(View.GONE);
+            
+            int minesState = bridge.nativeMinesGetState();
+            if (minesState == 1) {
+                // Game active - show game section
+                minesSetup.setVisibility(View.GONE);
+                minesGameSection.setVisibility(View.VISIBLE);
+                if (mineTiles == null) buildMinesGrid();
+                updateMineTiles();
+                updateMinesDisplay();
+                updateMinesActionButton();
+            } else if (minesState == 2 || minesState == 3) {
+                // Game finished - show result
+                minesSetup.setVisibility(View.GONE);
+                minesGameSection.setVisibility(View.VISIBLE);
+                if (mineTiles != null) updateMineTiles();
+                updateMinesDisplay();
+                btnMinesAction.setText("\uD83C\uDFAE NEW GAME");
+                btnMinesAction.setEnabled(true);
+                btnMinesAction.setAlpha(1.0f);
+                btnMinesAction.setBackgroundTintList(ColorStateList.valueOf(0xFFF7931A));
+            } else {
+                // No game - show setup
+                minesSetup.setVisibility(View.VISIBLE);
+                minesGameSection.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -901,6 +1005,165 @@ public class MainActivity extends AppCompatActivity {
                     mineTiles[i].setClickable(false);
                     break;
             }
+        }
+    }
+
+    // ===== Blackjack Casino Methods =====
+
+    private void selectCasinoGame(int gameId) {
+        currentCasinoGame = gameId;
+        updateGameSelectorUI();
+        refreshCasinoTab();
+    }
+
+    private void updateGameSelectorUI() {
+        if (currentCasinoGame == CASINO_GAME_MINES) {
+            btnGameMines.setTextColor(0xFFF7931A);
+            btnGameMines.setTypeface(null, android.graphics.Typeface.BOLD);
+            btnGameBlackjack.setTextColor(0xFF999999);
+            btnGameBlackjack.setTypeface(null, android.graphics.Typeface.NORMAL);
+        } else {
+            btnGameMines.setTextColor(0xFF999999);
+            btnGameMines.setTypeface(null, android.graphics.Typeface.NORMAL);
+            btnGameBlackjack.setTextColor(0xFFF7931A);
+            btnGameBlackjack.setTypeface(null, android.graphics.Typeface.BOLD);
+        }
+    }
+
+    private void startBlackjackGame() {
+        if (!bridge.nativeIsBlackjackUnlocked()) {
+            Toast.makeText(this, "Unlock blackjack at 10,000 clicks", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String betText = etBlackjackBet.getText().toString().trim();
+        if (betText.isEmpty()) {
+            Toast.makeText(this, "Enter a bet amount", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        double bet;
+        try {
+            bet = Double.parseDouble(betText);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "Invalid bet amount", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (bet <= 0) {
+            Toast.makeText(this, "Bet must be greater than 0", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        double maxBet = bridge.nativeBlackjackGetMaxBet();
+        if (bet > maxBet) {
+            Toast.makeText(this, "Max bet is " + formatNumber(maxBet) + " BTC (10%)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        boolean started = bridge.nativeBlackjackStart(bet);
+        if (!started) {
+            Toast.makeText(this, "Could not start game. Check balance.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Hide keyboard
+        android.view.inputmethod.InputMethodManager imm =
+            (android.view.inputmethod.InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(etBlackjackBet.getWindowToken(), 0);
+
+        blackjackSetup.setVisibility(View.GONE);
+        blackjackGameSection.setVisibility(View.VISIBLE);
+        tvBjResult.setVisibility(View.GONE);
+
+        updateBlackjackDisplay();
+        updateUI();
+    }
+
+    private void onBlackjackHit() {
+        if (!bridge.nativeBlackjackHit()) {
+            // Bust
+            finishBlackjackGame();
+        }
+        updateBlackjackDisplay();
+        updateUI();
+    }
+
+    private void onBlackjackStand() {
+        bridge.nativeBlackjackStand();
+        finishBlackjackGame();
+    }
+
+    private void finishBlackjackGame() {
+        double winnings = bridge.nativeBlackjackFinish();
+        updateBlackjackDisplay();
+        
+        int state = bridge.nativeBlackjackGetState();
+        String message = "";
+        int color = 0xFFFFFFFF;
+        
+        if (state == 2) { // Won
+            message = "🎉 YOU WIN! +" + formatNumber(winnings) + " BTC";
+            color = 0xFF4EC9B0;
+        } else if (state == 3) { // Lost
+            message = "💔 YOU LOSE! -" + formatNumber(bridge.nativeBlackjackGetBet()) + " BTC";
+            color = 0xFFE74C3C;
+        } else if (state == 4) { // Push
+            message = "📌 PUSH! Bet returned";
+            color = 0xFFFFC107;
+        }
+        
+        tvBjResult.setText(message);
+        tvBjResult.setTextColor(color);
+        tvBjResult.setVisibility(View.VISIBLE);
+
+        btnBlackjackHit.setEnabled(false);
+        btnBlackjackStand.setEnabled(false);
+    }
+
+    private void resetBlackjackUI() {
+        blackjackSetup.setVisibility(View.VISIBLE);
+        blackjackGameSection.setVisibility(View.GONE);
+        tvBjResult.setVisibility(View.GONE);
+        btnBlackjackHit.setEnabled(true);
+        btnBlackjackStand.setEnabled(true);
+        updateCasinoBalance();
+    }
+
+    private void updateBlackjackDisplay() {
+        int playerValue = bridge.nativeBlackjackGetPlayerHandValue();
+        int dealerValue = bridge.nativeBlackjackGetDealerHandValue();
+        double bet = bridge.nativeBlackjackGetBet();
+        double potential = bridge.nativeBlackjackGetPotentialWin();
+
+        tvPlayerValue.setText("Your Hand: " + playerValue);
+        tvDealerValue.setText("Dealer: " + (dealerValue > 0 ? String.valueOf(dealerValue) : "?"));
+        tvBjBet.setText("Bet: " + formatNumber(bet) + " BTC");
+        tvBjPotential.setText("Win: " + formatNumber(potential) + " BTC");
+
+        // Update player cards display
+        int playerCount = bridge.nativeBlackjackGetPlayerCardCount();
+        blackjackPlayerCards.removeAllViews();
+        for (int i = 0; i < playerCount; i++) {
+            TextView card = new TextView(this);
+            card.setText("🂠");
+            card.setTextSize(36);
+            card.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+            card.setPadding(4, 0, 4, 0);
+            blackjackPlayerCards.addView(card);
+        }
+
+        // Update dealer cards display
+        int dealerCount = bridge.nativeBlackjackGetDealerVisibleCardCount();
+        blackjackDealerCards.removeAllViews();
+        for (int i = 0; i < dealerCount; i++) {
+            TextView card = new TextView(this);
+            card.setText("🂠");
+            card.setTextSize(36);
+            card.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+            card.setPadding(4, 0, 4, 0);
+            blackjackDealerCards.addView(card);
         }
     }
 
