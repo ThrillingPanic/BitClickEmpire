@@ -101,6 +101,12 @@
                 android:layout_height="match_parent"
                 android:elevation="14dp" />
 
+            <com.bitclickempire.game.HackerInvaderView
+                android:id="@+id/hacker_invader"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:elevation="13dp" />
+
             <!-- Byte bonus active indicator -->
             <TextView
                 android:id="@+id/tv_byte_bonus"
