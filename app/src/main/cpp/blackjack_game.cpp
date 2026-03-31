@@ -226,10 +226,6 @@ double BlackjackGame::get_potential_win() const {
     }
 }
 
-int BlackjackGame::get_player_card_count() const {
-    return static_cast<int>(player_hand_.size());
-}
-
 int BlackjackGame::get_dealer_visible_card_count() const {
     if (player_stood_) {
         return static_cast<int>(dealer_hand_.size());
