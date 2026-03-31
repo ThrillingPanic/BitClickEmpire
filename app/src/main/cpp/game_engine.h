@@ -86,6 +86,21 @@ public:
     int mines_get_tile_state(int index) const;
     double mines_get_max_bet() const;
 
+    // Blackjack gambling
+    bool is_blackjack_unlocked() const;
+    bool blackjack_start(double bet);
+    bool blackjack_hit();
+    bool blackjack_stand();
+    double blackjack_finish();
+    int blackjack_get_state() const;
+    double blackjack_get_bet() const;
+    int blackjack_get_player_hand_value() const;
+    int blackjack_get_dealer_hand_value() const;
+    double blackjack_get_potential_win() const;
+    int blackjack_get_player_card_count() const;
+    int blackjack_get_dealer_visible_card_count() const;
+    double blackjack_get_max_bet() const;
+
     // Save/Load
     std::string save() const;
     bool load(const std::string& data);

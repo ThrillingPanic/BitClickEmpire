@@ -9,6 +9,7 @@
 GameState::GameState()
     : coins(0.0)
     , total_coins_earned(0.0)
+    , total_clicks_made(0)
     , click_power(1.0)
     , click_multiplier(1.0)
     , income_multiplier(1.0)
@@ -45,6 +46,7 @@ double GameState::click() {
     }
     coins += base;
     total_coins_earned += base;
+    total_clicks_made++;
     return base;
 }
 
@@ -63,6 +65,7 @@ void GameState::tick(double dt) {
             double click_earn = effective_click_power() * effective_click_multiplier();
             coins += click_earn;
             total_coins_earned += click_earn;
+            total_clicks_made++;
         }
     }
 
@@ -226,11 +229,16 @@ void GameState::hire_worker(WorkerRole role, double cost) {
     workers.add_workers(role, 1);
 }
 
+bool GameState::is_blackjack_unlocked() const {
+    return total_clicks_made >= 10000;
+}
+
 std::string GameState::serialize() const {
     std::ostringstream oss;
     oss.precision(15);
     oss << coins << "\n"
         << total_coins_earned << "\n"
+        << total_clicks_made << "\n"
         << click_power << "\n"
         << click_multiplier << "\n"
         << income_multiplier << "\n"
@@ -271,16 +279,37 @@ std::string GameState::serialize() const {
 bool GameState::deserialize(const std::string& data) {
     std::istringstream iss(data);
     size_t count = 0;
-    if (!(iss >> coins >> total_coins_earned >> click_power
+    if (!(iss >> coins >> total_coins_earned >> total_clicks_made >> click_power
               >> click_multiplier >> income_multiplier >> game_time >> count)) {
-        // Try legacy format without game_time
+        // Try format without total_clicks_made
         std::istringstream iss2(data);
-        game_time = 0;
+        total_clicks_made = 0;
         if (!(iss2 >> coins >> total_coins_earned >> click_power
-                  >> click_multiplier >> income_multiplier >> count)) {
-            return false;
+                  >> click_multiplier >> income_multiplier >> game_time >> count)) {
+            // Try legacy format without game_time and total_clicks_made
+            std::istringstream iss3(data);
+            game_time = 0;
+            total_clicks_made = 0;
+            if (!(iss3 >> coins >> total_coins_earned >> click_power
+                      >> click_multiplier >> income_multiplier >> count)) {
+                return false;
+            }
+            // Parse upgrades from legacy stream (iss3)
+            for (size_t i = 0; i < count; i++) {
+                std::string id;
+                int owned = 0;
+                if (!(iss3 >> id >> owned)) return false;
+                for (auto& u : upgrades) {
+                    if (u.id == id) {
+                        u.owned = owned;
+                        u.check_milestones();
+                        break;
+                    }
+                }
+            }
+            return true;
         }
-        // Parse upgrades from legacy stream
+        // Parse upgrades from iss2
         for (size_t i = 0; i < count; i++) {
             std::string id;
             int owned = 0;
@@ -295,6 +324,7 @@ bool GameState::deserialize(const std::string& data) {
         }
         return true;
     }
+    // Parse upgrades from iss (new format with total_clicks_made)
     for (size_t i = 0; i < count; i++) {
         std::string id;
         int owned = 0;

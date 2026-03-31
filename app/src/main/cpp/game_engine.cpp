@@ -258,6 +258,63 @@ int GameEngine::mines_get_tiles_revealed() const { return mines_game_.get_tiles_
 int GameEngine::mines_get_tile_state(int index) const { return mines_game_.get_tile_state(index); }
 double GameEngine::mines_get_max_bet() const { return state_.coins * 0.10; }
 
+// Blackjack gambling methods
+bool GameEngine::is_blackjack_unlocked() const {
+    return state_.is_blackjack_unlocked();
+}
+
+bool GameEngine::blackjack_start(double bet) {
+    return state_.blackjack_game.start(bet, state_.coins);
+}
+
+bool GameEngine::blackjack_hit() {
+    return state_.blackjack_game.hit();
+}
+
+bool GameEngine::blackjack_stand() {
+    return state_.blackjack_game.stand();
+}
+
+double GameEngine::blackjack_finish() {
+    double winnings = state_.blackjack_game.finish_game(state_.coins);
+    if (winnings > 0) {
+        state_.total_coins_earned += winnings;
+    }
+    return winnings;
+}
+
+int GameEngine::blackjack_get_state() const {
+    return static_cast<int>(state_.blackjack_game.get_state());
+}
+
+double GameEngine::blackjack_get_bet() const {
+    return state_.blackjack_game.get_bet();
+}
+
+int GameEngine::blackjack_get_player_hand_value() const {
+    return state_.blackjack_game.get_player_hand_value();
+}
+
+int GameEngine::blackjack_get_dealer_hand_value() const {
+    return state_.blackjack_game.get_dealer_hand_value();
+}
+
+double GameEngine::blackjack_get_potential_win() const {
+    return state_.blackjack_game.get_potential_win();
+}
+
+int GameEngine::blackjack_get_player_card_count() const {
+    return state_.blackjack_game.get_player_card_count();
+}
+
+int GameEngine::blackjack_get_dealer_visible_card_count() const {
+    return state_.blackjack_game.get_dealer_visible_card_count();
+}
+
+double GameEngine::blackjack_get_max_bet() const {
+    return state_.coins * 0.10;
+}
+
 std::string GameEngine::save() const {
     return state_.serialize();
 }

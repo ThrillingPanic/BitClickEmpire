@@ -433,6 +433,7 @@
                     android:padding="10dp">
 
                     <TextView
+                        android:id="@+id/btn_game_mines"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -441,17 +442,24 @@
                         android:textSize="13sp"
                         android:textColor="#FFF7931A"
                         android:textStyle="bold"
-                        android:fontFamily="monospace" />
+                        android:fontFamily="monospace"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?android:attr/selectableItemBackground" />
 
                     <TextView
+                        android:id="@+id/btn_game_blackjack"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:text="🃏 SOON"
+                        android:text="🃏 BLACKJACK"
                         android:textSize="13sp"
-                        android:textColor="#44FFFFFF"
-                        android:fontFamily="monospace" />
+                        android:textColor="#FFF7931A"
+                        android:fontFamily="monospace"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?android:attr/selectableItemBackground" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -706,6 +714,285 @@
                         android:textStyle="bold"
                         android:fontFamily="monospace"
                         android:paddingTop="8dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <!-- ===== Blackjack Unlock Message ===== -->
+                <LinearLayout
+                    android:id="@+id/blackjack_locked_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="32dp"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔒 LOCKED"
+                        android:textSize="24sp"
+                        android:textColor="#FFFF9800"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:paddingBottom="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Unlock blackjack by clicking"
+                        android:textSize="12sp"
+                        android:textColor="#AAFFFFFF"
+                        android:fontFamily="monospace" />
+
+                    <TextView
+                        android:id="@+id/tv_blackjack_clicks_needed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10,000 times on the BTC"
+                        android:textSize="14sp"
+                        android:textColor="#FFF7931A"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:paddingTop="4dp" />
+                </LinearLayout>
+
+                <!-- ===== Blackjack Setup Section ===== -->
+                <LinearLayout
+                    android:id="@+id/blackjack_setup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Enter Bet Amount"
+                        android:textSize="13sp"
+                        android:textColor="#CCFFFFFF"
+                        android:fontFamily="monospace"
+                        android:paddingBottom="4dp" />
+
+                    <EditText
+                        android:id="@+id/et_blackjack_bet"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:inputType="numberDecimal"
+                        android:hint="BTC Amount"
+                        android:textSize="14sp"
+                        android:textColor="#FFFFFFFF"
+                        android:textColorHint="#66FFFFFF"
+                        android:backgroundTint="#FF0F3460"
+                        android:fontFamily="monospace"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:paddingBottom="8dp" />
+
+                    <!-- Quick bet buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingBottom="12dp">
+
+                        <Button
+                            android:id="@+id/btn_bj_bet_25"
+                            android:layout_width="0dp"
+                            android:layout_height="32dp"
+                            android:layout_weight="1"
+                            android:text="25%"
+                            android:textSize="12sp"
+                            android:fontFamily="monospace"
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btn_bj_bet_50"
+                            android:layout_width="0dp"
+                            android:layout_height="32dp"
+                            android:layout_weight="1"
+                            android:text="50%"
+                            android:textSize="12sp"
+                            android:fontFamily="monospace"
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btn_bj_bet_max"
+                            android:layout_width="0dp"
+                            android:layout_height="32dp"
+                            android:layout_weight="1"
+                            android:text="MAX"
+                            android:textSize="12sp"
+                            android:fontFamily="monospace" />
+                    </LinearLayout>
+
+                    <!-- Start button -->
+                    <Button
+                        android:id="@+id/btn_start_blackjack"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:text="🃏 DEAL"
+                        android:textSize="16sp"
+                        android:textColor="#FF1A1A2E"
+                        android:textStyle="bold"
+                        android:backgroundTint="#FFF7931A"
+                        android:fontFamily="monospace" />
+                </LinearLayout>
+
+                <!-- ===== Blackjack Game Section ===== -->
+                <LinearLayout
+                    android:id="@+id/blackjack_game_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp"
+                    android:visibility="gone">
+
+                    <!-- Dealer hand -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="DEALER"
+                            android:textSize="13sp"
+                            android:textColor="#88FFFFFF"
+                            android:fontFamily="monospace"
+                            android:paddingBottom="4dp" />
+
+                        <LinearLayout
+                            android:id="@+id/blackjack_dealer_cards"
+                            android:layout_width="match_parent"
+                            android:layout_height="80dp"
+                            android:orientation="horizontal"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/tv_dealer_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Dealer: ?"
+                            android:textSize="14sp"
+                            android:textColor="#FFF7931A"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:gravity="center"
+                            android:paddingTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Player hand -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="YOUR HAND"
+                            android:textSize="13sp"
+                            android:textColor="#88FFFFFF"
+                            android:fontFamily="monospace"
+                            android:paddingBottom="4dp" />
+
+                        <LinearLayout
+                            android:id="@+id/blackjack_player_cards"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:orientation="horizontal"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:id="@+id/tv_player_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Your Hand: 0"
+                            android:textSize="16sp"
+                            android:textColor="#FF4EC9B0"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:gravity="center"
+                            android:paddingTop="4dp" />
+                    </LinearLayout>
+
+                    <!-- Bet and potential win -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingBottom="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_bj_bet"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Bet: 0 BTC"
+                            android:textSize="13sp"
+                            android:textColor="#AAFFFFFF"
+                            android:fontFamily="monospace"
+                            android:layout_marginEnd="16dp" />
+
+                        <TextView
+                            android:id="@+id/tv_bj_potential"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Win: 0 BTC"
+                            android:textSize="13sp"
+                            android:textColor="#FFF7931A"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace" />
+                    </LinearLayout>
+
+                    <!-- Game buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingBottom="8dp">
+
+                        <Button
+                            android:id="@+id/btn_bj_hit"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="HIT"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:layout_marginEnd="4dp" />
+
+                        <Button
+                            android:id="@+id/btn_bj_stand"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="STAND"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:fontFamily="monospace"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+
+                    <!-- Result text -->
+                    <TextView
+                        android:id="@+id/tv_bj_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"
+                        android:fontFamily="monospace"
+                        android:paddingTop="12dp"
                         android:visibility="gone" />
                 </LinearLayout>
 

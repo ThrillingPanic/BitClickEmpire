@@ -78,6 +78,21 @@ public class GameBridge {
     public native int nativeMinesGetTileState(int index);
     public native double nativeMinesGetMaxBet();
 
+    // Blackjack gambling
+    public native boolean nativeIsBlackjackUnlocked();
+    public native boolean nativeBlackjackStart(double bet);
+    public native boolean nativeBlackjackHit();
+    public native boolean nativeBlackjackStand();
+    public native double nativeBlackjackFinish();
+    public native int nativeBlackjackGetState();
+    public native double nativeBlackjackGetBet();
+    public native int nativeBlackjackGetPlayerHandValue();
+    public native int nativeBlackjackGetDealerHandValue();
+    public native double nativeBlackjackGetPotentialWin();
+    public native int nativeBlackjackGetPlayerCardCount();
+    public native int nativeBlackjackGetDealerVisibleCardCount();
+    public native double nativeBlackjackGetMaxBet();
+
     // Byte bonus
     public native void nativeSetByteBonus(double multiplier);
     public native void nativeClearByteBonus();

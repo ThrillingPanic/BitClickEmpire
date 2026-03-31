@@ -337,6 +337,73 @@ Java_com_bitclickempire_game_GameBridge_nativeMinesGetMaxBet(JNIEnv*, jobject) {
     return engine().mines_get_max_bet();
 }
 
+// === Blackjack Casino Gambling ===
+
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeIsBlackjackUnlocked(JNIEnv*, jobject) {
+    return engine().is_blackjack_unlocked();
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackStart(JNIEnv*, jobject, jdouble bet) {
+    return engine().blackjack_start(bet);
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackHit(JNIEnv*, jobject) {
+    return engine().blackjack_hit();
+}
+
+JNIEXPORT jboolean JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackStand(JNIEnv*, jobject) {
+    return engine().blackjack_stand();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackFinish(JNIEnv*, jobject) {
+    return engine().blackjack_finish();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetState(JNIEnv*, jobject) {
+    return engine().blackjack_get_state();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetBet(JNIEnv*, jobject) {
+    return engine().blackjack_get_bet();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetPlayerHandValue(JNIEnv*, jobject) {
+    return engine().blackjack_get_player_hand_value();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetDealerHandValue(JNIEnv*, jobject) {
+    return engine().blackjack_get_dealer_hand_value();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetPotentialWin(JNIEnv*, jobject) {
+    return engine().blackjack_get_potential_win();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetPlayerCardCount(JNIEnv*, jobject) {
+    return engine().blackjack_get_player_card_count();
+}
+
+JNIEXPORT jint JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetDealerVisibleCardCount(JNIEnv*, jobject) {
+    return engine().blackjack_get_dealer_visible_card_count();
+}
+
+JNIEXPORT jdouble JNICALL
+Java_com_bitclickempire_game_GameBridge_nativeBlackjackGetMaxBet(JNIEnv*, jobject) {
+    return engine().blackjack_get_max_bet();
+}
+
 // === Byte Bonus JNI ===
 
 JNIEXPORT void JNICALL

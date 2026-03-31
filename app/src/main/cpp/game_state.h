@@ -3,6 +3,7 @@
 #include "upgrade.h"
 #include "project.h"
 #include "boost.h"
+#include "blackjack_game.h"
 #include <vector>
 #include <string>
 
@@ -10,6 +11,7 @@
 struct GameState {
     double coins;
     double total_coins_earned;
+    int64_t total_clicks_made;   // total clicks for unlock conditions
     double click_power;       // coins per click
     double click_multiplier;  // global click multiplier
     double income_multiplier; // global passive income multiplier
@@ -19,6 +21,7 @@ struct GameState {
     std::vector<ActiveProject> active_projects;
     WorkerPool workers;
     std::vector<Boost> boosts;
+    BlackjackGame blackjack_game;
     double auto_click_accum;  // accumulator for auto-click timing
     double lucky_timer;       // countdown for next lucky bonus
     double last_lucky_bonus;  // amount of last lucky bonus (for UI)
@@ -57,6 +60,9 @@ struct GameState {
     bool claim_project(int active_index);
     void update_projects();  // check for completions
     void hire_worker(WorkerRole role, double cost);
+
+    // Casino games
+    bool is_blackjack_unlocked() const;  // Unlocked after 10,000 clicks
 
     std::string serialize() const;
     bool deserialize(const std::string& data);
