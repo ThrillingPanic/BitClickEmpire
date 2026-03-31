@@ -1,12 +1,17 @@
 package com.bitclickempire.game;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -45,20 +50,12 @@ public class HackerInvaderView extends View {
     // Visual wobble
     private static final float WOBBLE_AMPLITUDE = 1.5f;
 
-    private static final String[] HACKER_EMOJIS = {"👾", "🤖", "💀", "🐛", "☠️"};
-    private static final int[] HACKER_COLORS = {
-        0xFFFF0040, // red
-        0xFF00FF88, // neon green (matrix)
-        0xFF9D00FF, // purple
-        0xFFFF6600, // orange
-        0xFF00DDFF, // cyan
-    };
-
     private final List<Hacker> hackers = new ArrayList<>();
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint glowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint warningPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Matrix matrix = new Matrix();
     private final Random random = new Random();
+    private Bitmap hackerBitmap;
 
     private long lastSpawnCheck;
     private float centerX, centerY;
@@ -79,17 +76,25 @@ public class HackerInvaderView extends View {
     }
 
     private void init() {
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setFakeBoldText(true);
-        paint.setTextSize(HACKER_SIZE);
-
-        glowPaint.setTextAlign(Paint.Align.CENTER);
-        glowPaint.setFakeBoldText(true);
+        paint.setFilterBitmap(true);
 
         warningPaint.setTextAlign(Paint.Align.CENTER);
         warningPaint.setFakeBoldText(true);
         warningPaint.setTextSize(14f);
         warningPaint.setColor(0xFFFF0040);
+
+        // Load hacker sprite from assets
+        try {
+            InputStream is = getContext().getAssets().open("hacker.png");
+            Bitmap raw = BitmapFactory.decodeStream(is);
+            is.close();
+            // Scale to HACKER_SIZE (dp-ish px)
+            int size = (int) (HACKER_SIZE * 1.5f);
+            hackerBitmap = Bitmap.createScaledBitmap(raw, size, size, true);
+            if (raw != hackerBitmap) raw.recycle();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         lastSpawnCheck = System.currentTimeMillis();
         // Redraw loop
@@ -124,8 +129,6 @@ public class HackerInvaderView extends View {
         hk.speed = SPEED_MIN + random.nextFloat() * (SPEED_MAX - SPEED_MIN);
         hk.wobblePhase = random.nextFloat() * (float) (2 * Math.PI);
         hk.wobbleSpeed = 0.05f + random.nextFloat() * 0.05f;
-        hk.emoji = HACKER_EMOJIS[random.nextInt(HACKER_EMOJIS.length)];
-        hk.color = HACKER_COLORS[random.nextInt(HACKER_COLORS.length)];
 
         // Spawn from a random edge
         int edge = random.nextInt(4);
@@ -226,18 +229,21 @@ public class HackerInvaderView extends View {
             // Proximity warning — the closer to center, the more urgent
             float proximity = 1.0f - Math.min(dist / (Math.max(getWidth(), getHeight()) * 0.5f), 1.0f);
 
-            // Glow effect (gets brighter as it gets closer)
-            int glowAlpha = (int) (30 + proximity * 60);
-            glowPaint.setColor(hk.color);
-            glowPaint.setAlpha(glowAlpha);
-            glowPaint.setTextSize(HACKER_SIZE * pulse * 1.4f);
-            canvas.drawText(hk.emoji, hk.x, hk.y, glowPaint);
+            // Draw hacker bitmap with pulse scaling
+            if (hackerBitmap != null) {
+                float bw = hackerBitmap.getWidth();
+                float bh = hackerBitmap.getHeight();
+                matrix.reset();
+                matrix.postTranslate(-bw / 2f, -bh / 2f);  // center origin
+                matrix.postScale(pulse, pulse);               // pulsing
+                matrix.postTranslate(hk.x, hk.y);            // position
 
-            // Main emoji
-            paint.setTextSize(HACKER_SIZE * pulse);
-            paint.setColor(0xFFFFFFFF);
-            paint.setAlpha(255);
-            canvas.drawText(hk.emoji, hk.x, hk.y, paint);
+                // Fade alpha slightly based on proximity for glow feel
+                int alpha = (int) (200 + proximity * 55);
+                paint.setAlpha(Math.min(alpha, 255));
+                canvas.drawBitmap(hackerBitmap, matrix, paint);
+                paint.setAlpha(255);
+            }
 
             // Warning text when close
             if (proximity > 0.6f) {
@@ -257,8 +263,6 @@ public class HackerInvaderView extends View {
         float speed;
         float wobblePhase;
         float wobbleSpeed;
-        String emoji;
-        int color;
         long birthTime;
     }
 }
